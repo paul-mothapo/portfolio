@@ -3,12 +3,7 @@ import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
-import {
-  BLOG_POSTS,
-  EMAIL,
-  SOCIAL_LINKS,
-  CURRENT_WORK,
-} from './data'
+import { BLOG_POSTS, EMAIL, SOCIAL_LINKS, CURRENT_WORK } from './data'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -75,9 +70,9 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <div className="flex-1 text-zinc-800">
+        <div className="flex-1 text-zinc-800 dark:text-zinc-200">
           <h3 className="mb-5 text-lg font-medium">About Me</h3>
-          <p className="dark:text-zinc-400 text-zinc-600">
+          <p className="text-zinc-600 dark:text-zinc-400">
             Specializing in user experience, software design, and development.
             Focused on creating intuitive and performant web experiences that
             bridge the gap between design and development.
@@ -89,21 +84,32 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <h3 className="mb-5 text-lg font-medium text-zinc-800">Current Work</h3>
+        <h3 className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+          Current Work
+        </h3>
         <div className="">
           <p className="text-zinc-600 dark:text-zinc-400">
             {CURRENT_WORK.map((work, index) => (
               <span key={work.company}>
-                {index === 0 ? 'Currently at ' : index === 1 ? 'Outside of my primary role, I\'m also part of the team developing ' : 'In my spare time, I maintain '}
+                {index === 0
+                  ? 'Currently at '
+                  : index === 1
+                    ? "Outside of my primary role, I'm also part of the team developing "
+                    : 'In my spare time, I maintain '}
                 <a
                   href={work.link}
                   target="_blank"
-                  className="underline"
+                  className="underline dark:text-zinc-300"
                 >
                   {work.company}
                 </a>
                 , {work.description}.
-                {index < CURRENT_WORK.length - 1 && <><br /><br /></>}
+                {index < CURRENT_WORK.length - 1 && (
+                  <>
+                    <br />
+                    <br />
+                  </>
+                )}
               </span>
             ))}
             <br />
@@ -111,7 +117,7 @@ export default function Personal() {
             <a
               href="https://creators.spotify.com/pod/profile/theidealisticworld"
               target="_blank"
-              className="underline"
+              className="underline dark:text-zinc-300"
             >
               podcasting
             </a>{' '}
@@ -124,11 +130,13 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <h3 className="text-zinc-800 mb-3 text-lg font-medium">Blog</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <h3 className="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+          Blog
+        </h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <AnimatedBackground
             enableHover
-            className="h-full w-full rounded-lg bg-zinc-100 dark:bg-zinc-900/80"
+            className="h-full w-full rounded-lg bg-zinc-100 dark:border dark:border-zinc-600 dark:bg-zinc-900/80"
             transition={{
               type: 'spring',
               bounce: 0,
@@ -138,7 +146,7 @@ export default function Personal() {
             {BLOG_POSTS.map((post) => (
               <Link
                 key={post.uid}
-                className="-mx-3 w-full rounded-xl px-3 py-3"
+                className="-mx-3 w-full rounded-xl px-3 py-3 dark:border dark:border-zinc-800"
                 href={post.link}
                 data-id={post.uid}
               >
@@ -169,8 +177,10 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <h3 className="text-zinc-800 mb-5 text-lg font-medium">Connect</h3>
-        <p className="mb-5 text-zinc-600 dark:text-zinc-400">
+        <h3 className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+          Connect
+        </h3>
+        <p className="mb-5 text-zinc-600 dark:text-zinc-300">
           Feel free to contact me at{' '}
           <a className="underline dark:text-zinc-300" href={`mailto:${EMAIL}`}>
             {EMAIL}
