@@ -50,6 +50,13 @@ export const BLOG_POSTS: BlogPost[] = [
     uid: 'blog-2',
     image: 'https://images.unsplash.com/photo-1729938660612-87daeb4d3b63?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   },
+  {
+    title: 'What Limits the Growth of a Product?',
+    description: 'Product growth is often limited not by the quality of the product itself, but by various internal and external factors.',
+    link: '/blog/what-limits-the-growth-of-a-product',
+    uid: 'blog-3',
+    image: 'https://images.unsplash.com/photo-1659302615162-4bc8bb0e3e84?q=80&w=2021&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [
