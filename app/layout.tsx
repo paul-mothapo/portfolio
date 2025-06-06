@@ -13,9 +13,35 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Paul Mothapo',
+  title: {
+    default: 'Paul Mothapo',
+    template: '%s | Paul Mothapo'
+  },
   description:
     'Paul Mothapo is a software engineer with a passion for building products that help people live better lives.',
+  metadataBase: new URL('https://paulmothapo.co.za'),
+  openGraph: {
+    title: 'Paul Mothapo',
+    description: 'Paul Mothapo is a software engineer with a passion for building products that help people live better lives.',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Paul Mothapo',
+    description: 'Paul Mothapo is a software engineer with a passion for building products that help people live better lives.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
 const outfit = Outfit({

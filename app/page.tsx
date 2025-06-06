@@ -151,11 +151,11 @@ export default function Personal() {
                 data-id={post.uid}
               >
                 <div className="flex w-full flex-col space-y-3">
-                  <div className="relative h-48 w-full overflow-hidden rounded-lg">
+                  <div className="relative h-32 md:h-32 w-full overflow-hidden rounded-lg group hover:h-48 transition-all duration-200">
                     <img
                       src={post.image}
                       alt={post.title}
-                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                      className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105"
                     />
                   </div>
                   <div className="flex flex-col space-y-1">
