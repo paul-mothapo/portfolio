@@ -39,28 +39,28 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     title: 'The Importance of Product-Market Fit',
     description: 'Product-market fit is the foundation of a successful product. It is the ability of a product to meet the needs of its target market.',
-    link: '/blog/the-importance-of-product-market-fit',
+    link: '/blog/p/the-importance-of-product-market-fit',
     uid: 'blog-4',
     image: 'https://images.unsplash.com/photo-1697446862453-6b318ec6e497?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   },
   {
     title: 'What Limits the Growth of a Product?',
     description: 'Product growth is often limited not by the quality of the product itself, but by various internal and external factors.',
-    link: '/blog/what-limits-the-growth-of-a-product',
+    link: '/blog/p/what-limits-the-growth-of-a-product',
     uid: 'blog-3',
     image: 'https://images.unsplash.com/photo-1659302615162-4bc8bb0e3e84?q=80&w=2021&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   },
   {
     title: 'What Makes a Good Product?',
     description: 'Creating a successful product goes beyond just functionality.',
-    link: '/blog/what-makes-a-good-product',
+    link: '/blog/p/what-makes-a-good-product',
     uid: 'blog-2',
     image: 'https://images.unsplash.com/photo-1729938660612-87daeb4d3b63?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   },
   {
     title: 'Exploring Best Practices of Software Design',
     description: 'Design patterns and principles are the cornerstone of maintainable, scalable software',
-    link: '/blog/exploring-best-practices-of-software-design',
+    link: '/blog/p/exploring-best-practices-of-software-design',
     uid: 'blog-1',
     image: 'https://lh3.googleusercontent.com/tG6-MqdlvhQ-z7ENzGxR-kpGPPdPHbJ8UZtbTP66Rxi0UftTFU1yAvaBCVuigYuKvESMeEFf4jqNBVENFcZXEUnj8SSqj8zsop8UHAl0eD9A-hUCvQ=w2144-h1206-n-nu-rw'
   },

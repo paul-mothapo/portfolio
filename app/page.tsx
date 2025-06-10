@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
+import { CodeBlock } from '@/components/ui/code-block'
 import { BLOG_POSTS, EMAIL, SOCIAL_LINKS, CURRENT_WORK } from './data'
 
 const VARIANTS_CONTAINER = {
@@ -130,46 +131,30 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <h3 className="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
-          Blog
+        <h3 className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+          More
         </h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <AnimatedBackground
-            enableHover
-            className="h-full w-full rounded-lg bg-zinc-100 dark:border dark:border-zinc-600 dark:bg-zinc-900/80"
-            transition={{
-              type: 'spring',
-              bounce: 0,
-              duration: 0.2,
-            }}
-          >
-            {BLOG_POSTS.map((post) => (
-              <Link
-                key={post.uid}
-                className="-mx-3 w-full rounded-xl px-3 py-3 dark:border dark:border-zinc-800"
-                href={post.link}
-                data-id={post.uid}
-              >
-                <div className="flex w-full flex-col space-y-3">
-                  <div className="relative h-32 md:h-32 w-full overflow-hidden rounded-lg group hover:h-48 transition-all duration-200">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-1">
-                    <h4 className="font-normal dark:text-zinc-100">
-                      {post.title}
-                    </h4>
-                    <p className="text-zinc-500 dark:text-zinc-400">
-                      {post.description}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </AnimatedBackground>
+          <Link href="/blog" className="block">
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+            >
+              <h4 className="text-lg font-medium dark:text-zinc-100">Blog</h4>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Read my thoughts on human progress</p>
+            </motion.button>
+          </Link>
+          <Link href="/more/loglog-core" className="block">
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+            >
+              <h4 className="text-lg font-medium dark:text-zinc-100">LogLog Core</h4>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Explore the LogLog Core project</p>
+            </motion.button>
+          </Link>
         </div>
       </motion.section>
 
