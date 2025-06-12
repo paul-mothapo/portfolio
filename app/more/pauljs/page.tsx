@@ -4,7 +4,7 @@ import { Magnetic } from '@/components/ui/magnetic'
 import { CodeBlock } from '@/components/ui/code-block'
 import { EMAIL, SOCIAL_LINKS } from '@/app/data'
 import Link from 'next/link'
-import { GitBranch, Github } from 'lucide-react'
+import { Github } from 'lucide-react'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -78,16 +78,16 @@ export default function LogLogCore() {
           <p className="text-zinc-600 dark:text-zinc-400">
             I also created{' '}
             <a
-              href="https://www.npmjs.com/package/loglog-core"
+              href="https://www.npmjs.com/package/pauljs"
               target="_blank"
               className="underline dark:text-zinc-300"
             >
-              LogLog-Core
+              Pauljs
             </a>
-            , a scalable, framework-agnostic logging system.
+            , a lightweight framework for building fast landing pages.
           </p>
           <Link
-            href="https://github.com/mocklock-org/loglog"
+            href="https://github.com/mocklock-org/pauljs"
             target="_blank"
             className="flex items-center gap-1 underline dark:text-zinc-300"
           >
@@ -96,19 +96,7 @@ export default function LogLogCore() {
           </Link>
           <CodeBlock
             code={`# Using
-npm install loglog-core
-`}
-            className="mt-4"
-          />
-          <CodeBlock
-            code={`# Using
-yarn add loglog-core
-`}
-            className="mt-4"
-          />
-          <CodeBlock
-            code={`# Using
-pnpm install loglog-core
+npx create-pauljs-app
 `}
             className="mt-4"
           />

@@ -28,13 +28,13 @@ export function CodeBlock({ code, language, className }: CodeBlockProps) {
         if (part.startsWith('#')) {
           return <span key={`${i}-${j}`} className="text-emerald-600 dark:text-emerald-400">{part} </span>
         }
-        if (part === 'npm' || part === 'yarn' || part === 'pnpm') {
+        if (part === 'npm' || part === 'yarn' || part === 'pnpm' || part === 'npx') {
           return <span key={`${i}-${j}`} className="text-blue-600 dark:text-blue-400">{part} </span>
         }
         if (part === 'install' || part === 'add') {
           return <span key={`${i}-${j}`} className="text-purple-600 dark:text-purple-400">{part} </span>
         }
-        if (part.includes('loglog-core')) {
+        if (part.includes('loglog-core') || part.includes('pauljs') || part.includes('create-pauljs-app')) {
           return <span key={`${i}-${j}`} className="text-orange-600 dark:text-orange-400">{part} </span>
         }
         return <span key={`${i}-${j}`}>{part} </span>
