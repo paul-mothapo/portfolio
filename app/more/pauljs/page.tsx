@@ -100,6 +100,16 @@ npx create-pauljs-app
 `}
             className="mt-4"
           />
+          <p className="text-zinc-600 dark:text-zinc-400">
+            Use the <span className="font-bold">wormhole</span>{' '}
+            tag to access our experimental features as we continuously refine the simplest way to launch your website.
+          </p>
+            <CodeBlock
+            code={`# Using
+npx create-pauljs-app --tag wormhole
+`}
+            className="mt-4"
+          />
         </div>
       </motion.section>
 
