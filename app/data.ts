@@ -19,9 +19,9 @@ type CurrentWork = {
 
 export const CURRENT_WORK: CurrentWork[] = [
   {
-    company: 'Aurum Wealth',
-    description: 'a wealth science company focused on personalized legacy planning',
-    link: 'https://aurumwealth.ai',
+    company: 'Prefer not to say',
+    description: 'a company focused on making humanity better',
+    link: '/',
   },
   {
     company: 'Movemates',
@@ -30,12 +30,19 @@ export const CURRENT_WORK: CurrentWork[] = [
   },
   {
     company: 'MockLock',
-    description: 'a free developer toolkit featuring API testing, a simplified editor, security utilities, test data generation, and color palette tools',
-    link: 'https://mocklock.vercel.app',
+    description: 'an open source organization housing developer tools and frameworks including VizCore, Pauljs, LogLog, CronJob, and MockLock toolkit',
+    link: 'https://github.com/orgs/mocklock-org/repositories',
   },
 ]
 
 export const BLOG_POSTS: BlogPost[] = [
+  {
+    title: 'Mastering Modular Architecture with Monorepos',
+    description: 'Modern software development demands scalable, maintainable architectures. Discover how modular design combined with monorepo patterns creates powerful foundations for enterprise applications.',
+    link: '/blog/p/mastering-modular-architecture-with-monorepos',
+    uid: 'blog-5',
+    image: 'https://images.unsplash.com/photo-1753454116483-417bbc0a975c?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
   {
     title: 'The Importance of Product-Market Fit',
     description: 'Product-market fit is the foundation of a successful product. It is the ability of a product to meet the needs of its target market.',

@@ -74,7 +74,8 @@ export default function Personal() {
         <div className="flex-1 text-zinc-800 dark:text-zinc-200">
           <h3 className="mb-5 text-lg font-medium">About Me</h3>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Specializing in user experience, software design, and development.
+            Specializing in user <strong>experience</strong>,{' '}
+            <strong>software design</strong>, and <strong>development</strong>.
             Focused on creating intuitive and performant web experiences that
             bridge the gap between design and development.
           </p>
@@ -136,33 +137,55 @@ export default function Personal() {
         </h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Link href="/blog" className="block">
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
             >
               <h4 className="text-lg font-medium dark:text-zinc-100">Blog</h4>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Read my thoughts on human progress</p>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Read my thoughts on human progress
+              </p>
             </motion.button>
           </Link>
-          <Link href="/more/loglog-core" className="block">
-            <motion.button 
+          <Link href="/more/vizcore" className="block">
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
             >
-              <h4 className="text-lg font-medium dark:text-zinc-100">LogLog Core</h4>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Explore the LogLog Core project</p>
+              <h4 className="text-lg font-medium dark:text-zinc-100">
+                VizCore
+              </h4>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                High-performance data visualization framework
+              </p>
+            </motion.button>
+          </Link>
+          <Link href="/more/loglog-core" className="block">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+            >
+              <h4 className="text-lg font-medium dark:text-zinc-100">
+                LogLog Core
+              </h4>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Explore the LogLog Core project
+              </p>
             </motion.button>
           </Link>
           <Link href="/more/pauljs" className="block">
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
             >
               <h4 className="text-lg font-medium dark:text-zinc-100">Pauljs</h4>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Explore the Pauljs project</p>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Explore the Pauljs project
+              </p>
             </motion.button>
           </Link>
         </div>
