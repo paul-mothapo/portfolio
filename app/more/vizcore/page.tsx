@@ -79,6 +79,14 @@ export default function VizCore() {
             A high-performance data visualization framework that solves
             enterprise data challenges.
           </p>
+          <Link
+            href="https://github.com/mocklock-org/vizcore"
+            target="_blank"
+            className="flex items-center gap-1 underline dark:text-zinc-300"
+          >
+            <Github />
+            GitHub
+          </Link>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-900/80">
