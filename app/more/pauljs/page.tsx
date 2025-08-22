@@ -72,7 +72,7 @@ export default function LogLogCore() {
         transition={TRANSITION_SECTION}
       >
         <h3 className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
-          More
+          Pauljs
         </h3>
         <div className="space-y-4">
           <p className="text-zinc-600 dark:text-zinc-400">

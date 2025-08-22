@@ -2,9 +2,7 @@
 import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import Link from 'next/link'
-import { AnimatedBackground } from '@/components/ui/animated-background'
-import { CodeBlock } from '@/components/ui/code-block'
-import { BLOG_POSTS, EMAIL, SOCIAL_LINKS, CURRENT_WORK } from './data'
+import { EMAIL, SOCIAL_LINKS, CURRENT_WORK } from './data'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -128,6 +126,27 @@ export default function Personal() {
         </div>
       </motion.section>
 
+      <Link href="/blog" className="block">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="relative h-32 w-full overflow-hidden rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+          style={{
+            backgroundImage: 'url(/world.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          <div className="relative z-10 h-full flex flex-col -m-6 p-6">
+            <h4 className="text-2xl font-medium text-white">Blog</h4>
+            <p className="mt-2 text-md text-zinc-200">
+              Read my thoughts on human progress
+            </p>
+          </div>
+        </motion.button>
+      </Link>
+
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
@@ -136,15 +155,15 @@ export default function Personal() {
           More
         </h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <Link href="/blog" className="block">
+          <Link href="/more/cronsync" className="block">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
             >
-              <h4 className="text-lg font-medium dark:text-zinc-100">Blog</h4>
+              <h4 className="text-lg font-medium dark:text-zinc-100">CronSync</h4>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Read my thoughts on human progress
+                Explore the CronSync project
               </p>
             </motion.button>
           </Link>

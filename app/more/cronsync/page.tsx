@@ -59,7 +59,7 @@ function MagneticSocialLink({
   )
 }
 
-export default function LogLogCore() {
+export default function CronSync() {
   return (
     <motion.main
       className="space-y-24"
@@ -72,46 +72,22 @@ export default function LogLogCore() {
         transition={TRANSITION_SECTION}
       >
         <h3 className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
-          LogLog-Core
+          CronSync
         </h3>
         <div className="space-y-4">
           <p className="text-zinc-600 dark:text-zinc-400">
-            I also created{' '}
-            <a
-              href="https://www.npmjs.com/package/loglog-core"
-              target="_blank"
-              className="underline dark:text-zinc-300"
-            >
-              LogLog-Core
-            </a>
-            , a scalable, framework-agnostic logging system.
+            CronSync ensures your scheduled jobs run exactly once across multiple
+            server instances. Perfect for microservices, Kubernetes deployments,
+            and any distributed Node.js application.
           </p>
           <Link
-            href="https://github.com/mocklock-org/loglog"
+            href="https://github.com/mocklock-org/cronsync"
             target="_blank"
             className="flex items-center gap-1 underline dark:text-zinc-300"
           >
             <Github />
             GitHub
           </Link>
-          <CodeBlock
-            code={`# Using
-npm install loglog-core
-`}
-            className="mt-4"
-          />
-          <CodeBlock
-            code={`# Using
-yarn add loglog-core
-`}
-            className="mt-4"
-          />
-          <CodeBlock
-            code={`# Using
-pnpm install loglog-core
-`}
-            className="mt-4"
-          />
         </div>
       </motion.section>
 
