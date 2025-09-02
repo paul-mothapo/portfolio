@@ -72,10 +72,14 @@ export default function Personal() {
         <div className="flex-1 text-zinc-800 dark:text-zinc-200">
           <h3 className="mb-5 text-lg font-medium">About Me</h3>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Specializing in user <strong>experience</strong>,{' '}
-            <strong>software design</strong>, and <strong>development</strong>.
-            Focused on creating intuitive and performant web experiences that
-            bridge the gap between design and development.
+            Software engineer specializing in{' '}
+            <strong>distributed systems</strong>,{' '}
+            <strong>modular architecture</strong>, and{' '}
+            <strong>developer tools</strong>. I build scalable applications and
+            open-source frameworks, with expertise in monorepo management,
+            microservices, and enterprise-grade software solutions. Passionate
+            about creating tools that enhance developer productivity and system
+            reliability.
           </p>
         </div>
       </motion.section>
@@ -95,7 +99,9 @@ export default function Personal() {
                   ? 'Currently at '
                   : index === 1
                     ? "Outside of my primary role, I'm also part of the team developing "
-                    : 'In my spare time, I maintain '}
+                    : index === 2
+                      ? 'In my spare time, I maintain '
+                      : 'I am developing '}
                 <a
                   href={work.link}
                   target="_blank"
@@ -135,12 +141,12 @@ export default function Personal() {
             backgroundImage: 'url(/world.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
+            backgroundRepeat: 'no-repeat',
           }}
         >
-          <div className="relative z-10 h-full flex flex-col -m-6 p-6">
+          <div className="relative z-10 -m-6 flex h-full flex-col p-6">
             <h4 className="text-2xl font-medium text-white">Blog</h4>
-            <p className="mt-2 text-md text-zinc-200">
+            <p className="text-md mt-2 text-zinc-200">
               Read my thoughts on human progress
             </p>
           </div>
@@ -154,14 +160,31 @@ export default function Personal() {
         <h3 className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
           More
         </h3>
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Link href="/more/cherry-pick" className="block">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+            >
+              <h4 className="text-lg font-medium dark:text-zinc-100">
+                Cherry-Pick
+              </h4>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Enterprise database intelligence system
+              </p>
+            </motion.button>
+          </Link>
           <Link href="/more/cronsync" className="block">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
             >
-              <h4 className="text-lg font-medium dark:text-zinc-100">CronSync</h4>
+              <h4 className="text-lg font-medium dark:text-zinc-100">
+                CronSync
+              </h4>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                 Explore the CronSync project
               </p>

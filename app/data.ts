@@ -20,18 +20,23 @@ type CurrentWork = {
 export const CURRENT_WORK: CurrentWork[] = [
   {
     company: 'Prefer not to say',
-    description: 'a company focused on making humanity better',
+    description: 'developing scalable software solutions and distributed systems architecture',
     link: '/',
   },
   {
     company: 'Movemates',
-    description: 'a company designed to facilitate seamless relocations, whether moving a single item or an entire office',
+    description: 'building the technical infrastructure for a logistics platform that facilitates seamless relocations, from single items to entire office moves',
     link: 'https://movemates.co.za',
   },
   {
     company: 'MockLock',
-    description: 'an open source organization housing developer tools and frameworks including VizCore, Pauljs, LogLog, CronJob, and MockLock toolkit',
+    description: 'an open source organization where I architect and maintain developer tools and frameworks including VizCore (data visualization), CronSync (distributed job scheduling), LogLog-Core (logging system), and Pauljs (web framework)',
     link: 'https://github.com/orgs/mocklock-org/repositories',
+  },
+  {
+    company: 'Cherry-Pick',
+    description: 'a comprehensive enterprise database intelligence system in Go that provides analysis, monitoring, security assessment, and optimization for MySQL, PostgreSQL, SQLite, and MongoDB',
+    link: 'https://github.com/paul-mothapo/cherry-pick',
   },
 ]
 
