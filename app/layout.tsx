@@ -89,10 +89,15 @@ export default function RootLayout({
           storageKey="theme"
           defaultTheme="white"
         >
+          <a href="#main-content" className="skip-to-content">
+            Skip to main content
+          </a>
           <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-outfit)]">
             <div className="relative mx-auto w-full max-w-screen-sm flex-1 px-4 pt-20">
               <Header />
-              {children}
+              <div id="main-content" tabIndex={-1}>
+                {children}
+              </div>
               <Footer />
             </div>
           </div>
