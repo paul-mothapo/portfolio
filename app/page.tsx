@@ -121,6 +121,7 @@ export default function Personal() {
             <br />
             <br />I also share my thoughts through{' '}
             <a
+              rel="noopener noreferrer"
               href="https://creators.spotify.com/pod/profile/theidealisticworld"
               target="_blank"
               className="underline dark:text-zinc-300"

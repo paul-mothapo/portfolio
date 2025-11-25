@@ -1,0 +1,131 @@
+<Cover
+  src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Abstract AI neural network visualization - from unsplash.com"
+  caption="Abstract AI neural network visualization - from unsplash.com"
+/>
+
+# AI Engineering: Integrating Intelligence into Applications
+
+There's a new discipline emerging in our field, and it's changing how we think about building software. AI Engineering sits at the intersection of machine learning and production systems—and honestly, it's one of the most exciting spaces to be working in right now.
+
+---
+
+## What Even Is AI Engineering?
+
+Let me be clear about something: AI Engineering isn't about training models. That's machine learning. AI Engineering is about taking those models and making them actually useful in real applications that real people use every day.
+
+Think about it. We've had access to powerful AI APIs for a couple of years now. OpenAI, Anthropic, Google—they've all made it trivially easy to send a prompt and get a response. But turning that into a feature people love? That's where things get interesting.
+
+The traditional software engineering mindset says: given input A, you get output B. Every time. Deterministic. Predictable. AI breaks that contract completely. You send the same prompt twice and might get different responses. Confidence scores replace certainties. And somehow, you need to build reliable products on top of this probabilistic foundation.
+
+---
+
+## Why This Matters Now
+
+I've been thinking a lot about why AI integration has become so critical in the past year or so. A few things have converged:
+
+**The APIs matured.** Early GPT models were impressive demos but unreliable for production. Now we have models that are genuinely good enough to build on. Rate limits are reasonable. Latencies are acceptable. The infrastructure exists.
+
+**Users expect it.** This is the one that sneaks up on you. Once people use AI-powered search, AI-assisted writing, or AI recommendations in one app, they start wondering why your app doesn't have similar features. The bar has shifted.
+
+**The competitive pressure is real.** If you're building a product in 2024 and you're not thinking about AI integration, your competitors definitely are. It's becoming table stakes in many categories.
+
+---
+
+## The Principles I've Learned
+
+After integrating AI into several applications, some patterns have emerged that I think are worth sharing.
+
+### Always Have a Fallback
+
+This is non-negotiable. AI services go down. Models hallucinate. Rate limits get hit. Your application needs to work regardless. The best AI features I've seen are ones where you barely notice when the AI layer fails because there's a graceful degradation path.
+
+For search, that might mean falling back to traditional keyword matching. For recommendations, it could be showing popular items instead of personalized ones. Whatever it is, plan for failure from day one.
+
+### Keep Users in Control
+
+There's a temptation to let AI take over and make all the decisions. Fight that temptation. People want to feel like they're driving, not passengers. Show them when AI is involved. Let them override suggestions. Give them the option to turn features off entirely.
+
+The most successful AI features I've used are ones that feel like helpful assistants, not autonomous agents trying to run the show.
+
+### Latency Is Everything
+
+Here's a hard truth: a mediocre response that arrives instantly often beats a perfect response that takes five seconds. Users have been trained by decades of instant search results and sub-second page loads. They won't wait around for your AI to think.
+
+This means streaming responses where possible, caching aggressively, and sometimes accepting "good enough" from a faster model rather than "perfect" from a slower one.
+
+---
+
+## The Architecture Stuff
+
+I won't bore you with diagrams, but there are some architectural decisions worth thinking about.
+
+**Centralize your AI calls.** Don't scatter AI API calls throughout your codebase. Create a single gateway or service that handles all AI interactions. This gives you one place to add caching, rate limiting, logging, and fallback logic. It also makes it much easier to swap providers or add new models later.
+
+**Think about RAG early.** Retrieval-Augmented Generation—where you fetch relevant context before asking the model a question—is probably the most impactful pattern in AI engineering right now. It lets you ground model responses in your actual data instead of just hoping the model knows what you need.
+
+**Queue the heavy stuff.** Not everything needs to happen synchronously. Background processing AI tasks during off-peak times, batch similar requests together, and use job queues to smooth out load. Your users don't always need instant AI responses—sometimes "we'll email you when it's ready" is perfectly fine.
+
+---
+
+## Making Users Actually Happy
+
+Here's where it gets fun. AI opens up interaction patterns that simply weren't possible before.
+
+**Smart autocomplete** that actually understands context, not just prefix matching. Imagine typing in a search box and seeing suggestions that make sense based on your history, the current page, and what you're likely trying to accomplish.
+
+**Error recovery** that helps instead of frustrates. Instead of a generic "something went wrong" message, AI can analyze what the user was trying to do and suggest specific next steps. This turns a frustrating moment into a helpful one.
+
+**Personalization that works.** Not the creepy "we know everything about you" kind, but the genuinely helpful "here's what's relevant to you right now" kind. The difference is usually in how transparent you are about it.
+
+---
+
+## The Stuff Nobody Wants to Talk About
+
+Let's be honest about some challenges.
+
+**Cost.** AI API calls aren't cheap, especially at scale. You need to think hard about which features justify the cost and which don't. Caching helps a lot here—semantic caching, where similar queries hit the cache even if they're not identical, can reduce costs dramatically.
+
+**Prompt injection.** Users will try to manipulate your AI. Sometimes maliciously, sometimes just out of curiosity. You need input validation, output filtering, and careful prompt design to mitigate this. It's an ongoing arms race.
+
+**Bias and fairness.** AI models reflect the biases in their training data. If you're building features that affect what opportunities people see or how they're treated, you have a responsibility to audit for bias and mitigate it where possible.
+
+**Privacy.** What data are you sending to AI providers? Are you accidentally leaking personal information in prompts? These are questions you need to answer clearly, both for regulatory compliance and for user trust.
+
+---
+
+## Observability Matters More Than Ever
+
+With traditional software, debugging is relatively straightforward. Check the logs, find the error, fix the code. With AI systems, failures are often subtle. The response was technically correct but unhelpful. The suggestion was relevant but not quite right. The summary missed the key point.
+
+You need to instrument everything. Track not just whether API calls succeeded, but whether users found the results useful. Look at implicit signals—did they accept the suggestion? Did they immediately try again with a different query? Did they abandon the task entirely?
+
+Build feedback loops. Make it easy for users to tell you when AI features helped and when they didn't. This data is gold for improving your systems over time.
+
+---
+
+## In my closing
+
+AI Engineering is still a young discipline. We're all figuring this out together. The tools are evolving rapidly, best practices are still emerging, and what works today might be obsolete in six months.
+
+But that's also what makes it exciting. We're building the foundations for a new kind of software—applications that learn, adapt, and genuinely understand what users need. Not the science fiction version of AI, but something more subtle and arguably more useful: software that's just a little bit smarter, a little bit more helpful, a little bit more human in how it interacts.
+
+The engineers who learn to build these systems well will shape what software looks like for the next decade. I'm genuinely excited to be working in this space, and I hope this gives you a starting point for thinking about how AI can make your own applications better.
+
+---
+
+### Questions for Reflection
+
+- What's the one feature in your current project that would benefit most from AI integration?
+- How would your application behave if every AI service you depend on went down for an hour?
+- What implicit signals could you track to understand if your AI features are actually helping users?
+
+### Further Reading
+
+- [Building LLM Applications for Production](https://huyenchip.com/2023/04/11/llm-engineering.html) - Chip Huyen's comprehensive guide to production LLM systems
+- [Prompt Engineering Guide](https://www.promptingguide.ai/) - Community-driven resource for effective prompt design
+- [LangChain Documentation](https://python.langchain.com/) - Framework for building LLM-powered applications
+- [OpenAI Best Practices](https://platform.openai.com/docs/guides/prompt-engineering) - Official guidelines for effective AI integration
+- [What We Learned from a Year of Building with LLMs](https://www.oreilly.com/radar/what-we-learned-from-a-year-of-building-with-llms-part-i/) - Practical lessons from practitioners
+
+---
