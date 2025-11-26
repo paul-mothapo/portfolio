@@ -42,6 +42,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Breaking Free from Tight Coupling: The Power of Dependency Injection',
+    description: 'As codebases grow, tight coupling makes testing difficult and refactoring risky. Dependency injection offers a path forward—a way to build flexible, testable systems that can adapt as requirements change.',
+    link: '/blog/p/dependency-injection',
+    uid: 'blog-7',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'AI Engineering: Integrating Intelligence into Applications',
     description: 'AI Engineering bridges machine learning and production software. Learn how to seamlessly integrate AI capabilities into applications to create genuinely better user experiences.',
     link: '/blog/p/ai-engineering-integrating-intelligence-into-applications',
