@@ -19,9 +19,9 @@ type CurrentWork = {
 
 export const CURRENT_WORK: CurrentWork[] = [
   {
-    company: 'Prefer not to say',
+    company: 'Mirathi',
     description: 'developing scalable software solutions and distributed systems architecture',
-    link: '/',
+    link: 'https://mirathi.co',
   },
   {
     company: 'Movemates',
