@@ -42,6 +42,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Migrating from Webpack to Vite: How We Slashed Build Times by 70%',
+    description: 'When your application demands 8GB of memory just to build, something has gone wrong. This is the story of hitting the scalability wall with CRA and Webpack, and how Vite transformed our deployment pipeline.',
+    link: '/blog/p/migrating-from-webpack-to-vite',
+    uid: 'blog-8',
+    image: 'https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'Breaking Free from Tight Coupling: The Power of Dependency Injection',
     description: 'As codebases grow, tight coupling makes testing difficult and refactoring risky. Dependency injection offers a path forward—a way to build flexible, testable systems that can adapt as requirements change.',
     link: '/blog/p/dependency-injection',

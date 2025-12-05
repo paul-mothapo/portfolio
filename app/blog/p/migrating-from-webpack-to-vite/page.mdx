@@ -1,0 +1,200 @@
+<Cover
+  src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Server infrastructure representing build optimization - from unsplash.com"
+  caption="Server infrastructure representing build optimization - from unsplash.com"
+/>
+
+# Migrating from Webpack to Vite: How We Slashed Build Times by 70%
+
+When your application starts demanding 8GB of memory just to build, you know something has gone fundamentally wrong. This is the story of how we hit the scalability wall with Create React App and Webpack, and how migrating to Vite transformed our deployment pipeline from a bottleneck into a breeze.
+
+---
+
+## The Growing Pains
+
+Our application started like many others—a Create React App (CRA) bootstrapped project that worked beautifully in its early days. The developer experience was smooth, builds were fast, and deployment was straightforward. But as the project scaled and features accumulated, cracks began to appear in the foundation.
+
+### The First Warning Signs
+
+Performance degradation crept in gradually. What used to be a quick build started taking longer. Local development became sluggish. But the real wake-up call came when our CI/CD pipeline started failing in unpredictable ways.
+
+The culprit? JavaScript heap memory exhaustion during the build process.
+
+---
+
+## Understanding the Webpack Bottleneck
+
+Create React App uses Webpack under the hood, and Webpack's architecture is fundamentally based on **eager bundling**. This means:
+
+- **Everything is bundled at once**: Webpack analyzes your entire dependency graph and bundles every module before serving anything
+- **Memory-intensive processing**: Large codebases require significant memory to hold the entire bundle graph in memory
+- **Transformation overhead**: Every file goes through loaders and plugins synchronously
+
+For smaller projects, this approach works fine. But as your codebase grows—more components, more dependencies, more routes—the memory footprint grows exponentially.
+
+### The Numbers Don't Lie
+
+Our Docker containers running on Google Cloud Platform started hitting memory limits:
+
+| Memory Allocated | Result |
+|-----------------|--------|
+| 4GB | Build failed - Out of memory |
+| 6GB | Build failed - Out of memory |
+| 8GB | Build succeeded... barely |
+
+Even when builds succeeded with 8GB, the writing was on the wall. We were heading toward a scalability cliff. Each new feature would push us closer to the edge, and throwing more memory at the problem isn't a sustainable strategy—it's expensive, wasteful, and doesn't address the root cause.
+
+---
+
+## The Decision to Migrate
+
+The symptoms were clear:
+- **Build times averaging 6+ minutes** in our GCP Cloud Run deployments
+- **Unpredictable build failures** due to memory exhaustion
+- **Developer frustration** with slow local development feedback loops
+- **Increasing infrastructure costs** from higher memory allocations
+
+Something had to change. After evaluating our options, Vite emerged as the clear winner.
+
+---
+
+## Why Vite?
+
+Vite represents a fundamental shift in how modern build tools approach the problem. Instead of bundling everything upfront, Vite leverages **native ES modules** and takes a completely different approach:
+
+### Native ESM for Development
+
+During development, Vite serves source files directly using native ES modules. The browser handles the module resolution, which means:
+
+- **Near-instant server start**: No bundling required to start developing
+- **On-demand compilation**: Only files that are actually requested get transformed
+- **Hot Module Replacement (HMR)**: Updates are lightning-fast because only the changed module needs processing
+
+### Optimized Production Builds
+
+For production, Vite uses Rollup under the hood with highly optimized defaults:
+
+- **Efficient tree-shaking**: Dead code elimination is more aggressive
+- **Better code splitting**: Smarter chunking strategies out of the box
+- **Modern output**: Targets modern browsers by default, with legacy support as an option
+
+---
+
+## The Migration Process
+
+Migrating a large CRA application to Vite isn't trivial, but it's more manageable than you might expect.
+
+### Key Steps
+
+1. **Audit Dependencies**: Some packages have CRA-specific assumptions. Identify and plan for these early.
+
+2. **Update Entry Points**: Vite expects `index.html` at the root and handles entry points differently than CRA.
+
+3. **Environment Variables**: CRA uses `REACT_APP_` prefix; Vite uses `VITE_`. A find-and-replace plus some config updates.
+
+4. **Import Adjustments**: Some import patterns that worked in Webpack might need adjustments for Vite's ESM-first approach.
+
+5. **Plugin Configuration**: Replace CRA's hidden Webpack configuration with explicit Vite plugins.
+
+### Common Gotchas
+
+- **SVG imports**: CRA's `ReactComponent` pattern requires the `vite-plugin-svgr` plugin
+- **Absolute imports**: Configure `resolve.alias` in `vite.config.ts`
+- **CSS modules**: Works out of the box, but naming conventions might differ slightly
+- **Environment variable access**: `import.meta.env` instead of `process.env`
+
+---
+
+## The Results: A Shot on Target
+
+The impact was immediate and dramatic.
+
+### Build Time Transformation
+
+| Metric | Before (Webpack) | After (Vite) | Improvement |
+|--------|-----------------|--------------|-------------|
+| Initial Build | ~6 minutes | ~2 minutes | **67% faster** |
+| Memory Required | 8GB | 2GB | **75% reduction** |
+| CI/CD Reliability | Intermittent failures | Consistent success | **100% stable** |
+
+### The Journey of Improvement
+
+The transition wasn't instant—we saw progressive improvements:
+
+1. **Week 1**: Build times dropped from 6 minutes to 4 minutes
+2. **Week 2**: After optimizing our Vite configuration, down to 2 minutes
+3. **Ongoing**: Consistent 2-minute builds with room for further optimization
+
+### Developer Experience Wins
+
+Beyond the CI/CD improvements, our development workflow transformed:
+
+- **Dev server startup**: From 30+ seconds to under 1 second
+- **HMR updates**: Near-instantaneous instead of 2-3 seconds
+- **Build predictability**: No more random out-of-memory crashes
+
+---
+
+## Lessons Learned
+
+### 1. Don't Wait for the Crisis
+
+We should have evaluated our build tooling earlier. The warning signs were there—we just didn't prioritize addressing them until they became critical.
+
+### 2. Memory Isn't Always the Answer
+
+Our instinct was to throw more resources at the problem. This might work short-term, but it's masking a fundamental architectural issue.
+
+### 3. Modern Tools Exist for a Reason
+
+Vite, esbuild, and other modern build tools aren't just about speed—they're about sustainable scalability. The architecture is designed for large codebases from the ground up.
+
+### 4. Migration Is Manageable
+
+The fear of migration often exceeds the reality. With proper planning, moving from CRA to Vite took us about a week, and the ROI was immediate.
+
+---
+
+## When Should You Consider This Migration?
+
+Consider migrating from Webpack/CRA to Vite if you're experiencing:
+
+- **Build times exceeding 3-5 minutes** for production builds
+- **Memory pressure** requiring 4GB+ for builds
+- **Slow development feedback** with sluggish HMR
+- **Scaling team size** where build times impact multiple developers daily
+- **Growing codebase** where you're frequently adding new features and dependencies
+
+---
+
+## In My Closing
+
+The migration from Create React App with Webpack to Vite was one of the most impactful infrastructure improvements we've made. What seemed like a daunting task turned into a straightforward process with outsized returns.
+
+Our GCP Cloud Run deployments now complete in a fraction of the time. Our developers spend less time waiting and more time coding. Our infrastructure costs decreased while our reliability increased.
+
+If you're hitting similar walls with your build tooling, don't wait until you're allocating double-digit gigabytes of RAM to your build containers. The modern JavaScript ecosystem has evolved, and tools like Vite represent the next generation of build tooling—designed for the scale of today's applications.
+
+The 6-minute build that became a 2-minute build isn't just about saved time. It's about faster feedback loops, happier developers, and a foundation that can scale with your ambitions.
+
+---
+
+### Questions for Reflection
+
+- What's your current build time, and is it sustainable as your application grows?
+- How much memory does your build process currently require?
+- Are you experiencing any of the warning signs mentioned in this article?
+
+### Further Reading
+
+- [Vite Documentation](https://vitejs.dev/) - The official guide to getting started with Vite
+
+- [Why Vite](https://vitejs.dev/guide/why.html) - Evan You's explanation of the problems Vite solves
+
+- [Migrating from CRA](https://vitejs.dev/guide/migration-from-cra.html) - Official migration guide
+
+- [Rollup Documentation](https://rollupjs.org/) - Understanding Vite's production bundler
+
+- [ES Modules Deep Dive](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) - Understanding the foundation Vite is built on
+
+
