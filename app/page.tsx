@@ -107,7 +107,7 @@ export default function Personal() {
                   : index === 1
                     ? "Outside of my primary role, I'm also part of the team developing "
                     : index === 2
-                      ? 'In my spare time, I maintain '
+                      ? 'I am developing '
                       : 'I am developing '}
                 <a
                   href={work.link}
@@ -218,6 +218,20 @@ export default function Personal() {
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Link href="/more/dysporium-sdk" className="block" aria-label="Dysporium SDK: Simple SDK that allows developers to ship with AI quickly">
+            <motion.article
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+            >
+              <h3 className="text-lg font-medium dark:text-zinc-100">
+                Dysporium SDK
+              </h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Simple SDK that allows developers to ship with AI quickly
+              </p>
+            </motion.article>
+          </Link>
           <Link href="/more/cherry-pick" className="block" aria-label="Cherry-Pick: Enterprise database intelligence system">
             <motion.article
               whileHover={{ scale: 1.02 }}

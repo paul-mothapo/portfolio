@@ -3,8 +3,7 @@ import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
-import { CodeBlock } from '@/components/ui/code-block'
-import { BLOG_POSTS, EMAIL, SOCIAL_LINKS, CURRENT_WORK } from '../data'
+import { BLOG_POSTS, EMAIL, SOCIAL_LINKS } from '../data'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
