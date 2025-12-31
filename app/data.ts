@@ -33,11 +33,11 @@ export const CURRENT_WORK: CurrentWork[] = [
     description: 'An open source simple SDK that allows developers to ship with AI quickly',
     link: 'https://github.com/Dysporium/dysporium-ai-sdk',
   },
-  // {
-  //   company: 'Cherry-Pick',
-  //   description: 'a comprehensive enterprise database intelligence system in Go that provides analysis, monitoring, security assessment, and optimization for MySQL, PostgreSQL, SQLite, and MongoDB',
-  //   link: 'https://github.com/paul-mothapo/cherry-pick',
-  // },
+  {
+    company: 'Dysporium Polyglot',
+    description: 'An open source simplest way to add multi-language support to any website. Install once, translate everywhere.',
+    link: 'https://github.com/Dysporium/dysporium-polyglot',
+  },
 ]
 
 export const BLOG_POSTS: BlogPost[] = [

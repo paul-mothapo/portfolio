@@ -76,16 +76,18 @@ export default function Personal() {
         aria-labelledby="about-heading"
       >
         <div className="flex-1 text-zinc-800 dark:text-zinc-200">
-          <h1 id="about-heading" className="mb-5 text-lg font-medium">About Me</h1>
+          <h1 id="about-heading" className="mb-5 text-lg font-medium">
+            About Me
+          </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Software engineer specializing in{' '}
-            <strong>distributed systems</strong>,{' '}
-            <strong>modular architecture</strong>, and{' '}
-            <strong>developer tools</strong>. I build scalable applications and
-            open-source frameworks, with expertise in monorepo management,
-            microservices, and enterprise-grade software solutions. Passionate
-            about creating tools that enhance developer productivity and system
-            reliability.
+            Software engineer building distributed systems and developer
+            tooling. I architect scalable applications with modern monorepo
+            structures and microservices patterns. Currently developing
+            enterprise solutions at Mirathi and contributing to Movemates'
+            logistics platform. Creator of open-source tools including Dysporium
+            SDK for AI integration, Polyglot for internationalization, and NDF
+            data format. I share insights on software architecture through
+            writing and podcasting.
           </p>
         </div>
       </motion.section>
@@ -95,38 +97,78 @@ export default function Personal() {
         transition={TRANSITION_SECTION}
         aria-labelledby="work-heading"
       >
-        <h2 id="work-heading" className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+        <h2
+          id="work-heading"
+          className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200"
+        >
           Current Work
         </h2>
         <div>
           <p className="text-zinc-600 dark:text-zinc-400">
-            {CURRENT_WORK.map((work, index) => (
-              <span key={work.company}>
-                {index === 0
-                  ? 'Currently at '
-                  : index === 1
-                    ? "Outside of my primary role, I'm also part of the team developing "
-                    : index === 2
-                      ? 'I am developing '
-                      : 'I am developing '}
-                <a
-                  href={work.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline dark:text-zinc-300"
-                  aria-label={`${work.company} (opens in new tab)`}
-                >
-                  {work.company}
-                </a>
-                , {work.description}.
-                {index < CURRENT_WORK.length - 1 && (
-                  <>
-                    <br />
-                    <br />
-                  </>
-                )}
-              </span>
-            ))}
+            {CURRENT_WORK.map((work, index) => {
+              if (index === 3) return null
+              
+              if (index === 2) {
+                const polyglot = CURRENT_WORK[3]
+                return (
+                  <span key={work.company}>
+                    Creator of{' '}
+                    <a
+                      href={work.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline dark:text-zinc-300"
+                      aria-label={`${work.company} (opens in new tab)`}
+                    >
+                      {work.company}
+                    </a>
+                    , {work.description}, and{' '}
+                    <a
+                      href={polyglot.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline dark:text-zinc-300"
+                      aria-label={`${polyglot.company} (opens in new tab)`}
+                    >
+                      {polyglot.company}
+                    </a>
+                    , {polyglot.description}.
+                    {index < CURRENT_WORK.length - 2 && (
+                      <>
+                        <br />
+                        <br />
+                      </>
+                    )}
+                  </span>
+                )
+              }
+              
+              return (
+                <span key={work.company}>
+                  {index === 0
+                    ? 'Currently at '
+                    : index === 1
+                      ? "Outside of my primary role, I'm also part of the team developing "
+                      : 'Also helping develop '}
+                  <a
+                    href={work.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline dark:text-zinc-300"
+                    aria-label={`${work.company} (opens in new tab)`}
+                  >
+                    {work.company}
+                  </a>
+                  , {work.description}.
+                  {index < CURRENT_WORK.length - 2 && (
+                    <>
+                      <br />
+                      <br />
+                    </>
+                  )}
+                </span>
+              )
+            })}
             <br />
             <br />I also share my thoughts through{' '}
             <a
@@ -148,11 +190,14 @@ export default function Personal() {
         transition={TRANSITION_SECTION}
         aria-labelledby="featured-blog-heading"
       >
-        <h2 id="featured-blog-heading" className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+        <h2
+          id="featured-blog-heading"
+          className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200"
+        >
           Featured Blog
         </h2>
-        <Link 
-          href={BLOG_POSTS[0].link} 
+        <Link
+          href={BLOG_POSTS[0].link}
           className="group block"
           aria-label={`Read blog post: ${BLOG_POSTS[0].title}`}
         >
@@ -169,9 +214,12 @@ export default function Personal() {
               role="img"
               aria-label={`Cover image for ${BLOG_POSTS[0].title}`}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" aria-hidden="true" />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"
+              aria-hidden="true"
+            />
             <div className="relative z-10 flex h-full flex-col justify-end p-6">
-              <span className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-300">
+              <span className="mb-2 text-xs font-medium tracking-wider text-zinc-300 uppercase">
                 Latest Post
               </span>
               <h3 className="text-xl font-medium text-white">
@@ -213,12 +261,37 @@ export default function Personal() {
         transition={TRANSITION_SECTION}
         aria-labelledby="projects-heading"
       >
-        <h2 id="projects-heading" className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+        <h2
+          id="projects-heading"
+          className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200"
+        >
           More
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <Link href="/more/dysporium-sdk" className="block" aria-label="Dysporium SDK: Simple SDK that allows developers to ship with AI quickly">
+        <Link
+            href="/more/dysporium-polyglot"
+            className="block"
+            aria-label="Dysporium Polyglot: Simplest way to add multi-language support to any website"
+          >
+            <motion.article
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
+            >
+              <h3 className="text-lg font-medium dark:text-zinc-100">
+                Dysporium Polyglot
+              </h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                Simplest way to add multi-language support to any website
+              </p>
+            </motion.article>
+          </Link>
+          <Link
+            href="/more/dysporium-sdk"
+            className="block"
+            aria-label="Dysporium SDK: Simple SDK that allows developers to ship with AI quickly"
+          >
             <motion.article
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -232,7 +305,11 @@ export default function Personal() {
               </p>
             </motion.article>
           </Link>
-          <Link href="/more/cherry-pick" className="block" aria-label="Cherry-Pick: Enterprise database intelligence system">
+          <Link
+            href="/more/cherry-pick"
+            className="block"
+            aria-label="Cherry-Pick: Enterprise database intelligence system"
+          >
             <motion.article
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -246,7 +323,11 @@ export default function Personal() {
               </p>
             </motion.article>
           </Link>
-          <Link href="/more/cronsync" className="block" aria-label="CronSync: Distributed job scheduling system">
+          <Link
+            href="/more/cronsync"
+            className="block"
+            aria-label="CronSync: Distributed job scheduling system"
+          >
             <motion.article
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -260,7 +341,11 @@ export default function Personal() {
               </p>
             </motion.article>
           </Link>
-          <Link href="/more/vizcore" className="block" aria-label="VizCore: High-performance data visualization framework">
+          <Link
+            href="/more/vizcore"
+            className="block"
+            aria-label="VizCore: High-performance data visualization framework"
+          >
             <motion.article
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -274,7 +359,11 @@ export default function Personal() {
               </p>
             </motion.article>
           </Link>
-          <Link href="/more/loglog-core" className="block" aria-label="LogLog Core: Structured logging system">
+          <Link
+            href="/more/loglog-core"
+            className="block"
+            aria-label="LogLog Core: Structured logging system"
+          >
             <motion.article
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -288,7 +377,11 @@ export default function Personal() {
               </p>
             </motion.article>
           </Link>
-          <Link href="/more/pauljs" className="block" aria-label="Pauljs: Modern web framework">
+          <Link
+            href="/more/pauljs"
+            className="block"
+            aria-label="Pauljs: Modern web framework"
+          >
             <motion.article
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -308,20 +401,26 @@ export default function Personal() {
         transition={TRANSITION_SECTION}
         aria-labelledby="connect-heading"
       >
-        <h2 id="connect-heading" className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+        <h2
+          id="connect-heading"
+          className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200"
+        >
           Connect
         </h2>
         <p className="mb-5 text-zinc-600 dark:text-zinc-300">
           Feel free to contact me at{' '}
-          <a 
-            className="underline dark:text-zinc-300" 
+          <a
+            className="underline dark:text-zinc-300"
             href={`mailto:${EMAIL}`}
             aria-label={`Send email to ${EMAIL}`}
           >
             {EMAIL}
           </a>
         </p>
-        <nav className="flex items-center justify-start space-x-3" aria-label="Social media links">
+        <nav
+          className="flex items-center justify-start space-x-3"
+          aria-label="Social media links"
+        >
           {SOCIAL_LINKS.map((link) => (
             <MagneticSocialLink key={link.label} link={link.link}>
               {link.label}
