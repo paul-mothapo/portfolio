@@ -1,8 +1,10 @@
 'use client'
 import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
+import { Spotlight } from '@/components/ui/spotlight'
 import Link from 'next/link'
 import { EMAIL, SOCIAL_LINKS, CURRENT_WORK, BLOG_POSTS } from './data'
+import { Sparkles, ArrowRight } from 'lucide-react'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -70,6 +72,41 @@ export default function Personal() {
       initial="hidden"
       animate="visible"
     >
+      {/* 2026 Future Wrapped Banner */}
+      <motion.section
+        variants={VARIANTS_SECTION}
+        transition={TRANSITION_SECTION}
+      >
+        <Link
+          href="/2026-future-wrapped"
+          className="group block"
+          aria-label="View 2026 Future Wrapped"
+        >
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className="relative overflow-hidden rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 p-4 text-white shadow-lg transition-all hover:shadow-xl dark:border-zinc-800 md:p-6"
+          >
+            <Spotlight size={200} />
+            <div className="relative z-10 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex-1">
+                <h2 className="mb-1 text-lg font-bold md:text-xl">
+                  2026 Future Wrapped
+                </h2>
+
+              </div>
+              <motion.div
+                whileHover={{ x: 5 }}
+                className="flex shrink-0 items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm transition-colors group-hover:bg-white/30"
+              >
+                <span className="text-sm font-medium">Explore</span>
+                <ArrowRight className="h-3 w-3" />
+              </motion.div>
+            </div>
+          </motion.div>
+        </Link>
+      </motion.section>
+
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
