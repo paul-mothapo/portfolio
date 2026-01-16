@@ -14,7 +14,7 @@ export function Header() {
     <header className="mb-8 flex items-center justify-between" role="banner">
       <div className="flex items-center gap-2">
         <Link href="/" aria-label="Paul Mothapo - Go to homepage">
-          <Image src="/logo.png" alt="" width={60} height={60} aria-hidden="true" />
+          <Image src="/Roboto.png" alt="" width={60} height={60} aria-hidden="true" />
         </Link>
         <div className="flex flex-col">
           <Link href="/" className="font-medium text-black dark:text-white">

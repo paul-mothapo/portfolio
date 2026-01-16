@@ -72,7 +72,6 @@ export default function Personal() {
       initial="hidden"
       animate="visible"
     >
-      {/* 2026 Future Wrapped Banner */}
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}

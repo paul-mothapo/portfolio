@@ -2,11 +2,11 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import { useState, useEffect, useRef } from 'react'
-import { 
-  Globe, 
-  Sparkles, 
-  Rocket, 
-  Users, 
+import {
+  Globe,
+  Sparkles,
+  Rocket,
+  Users,
   Target,
   Heart,
   TrendingUp,
@@ -20,99 +20,107 @@ import {
   Pause,
   Play,
   Maximize,
-  Minimize
+  Minimize,
 } from 'lucide-react'
-
 
 const goals = [
   {
     icon: Globe,
     title: 'Global Impact',
-    description: 'Making stuff that actually matters, not just another app that gets deleted after 5 minutes',
+    description:
+      'Making stuff that actually matters, not just another app that gets deleted after 5 minutes',
     bgColor: 'bg-white',
     textColor: 'text-black',
   },
   {
     icon: Sparkles,
     title: 'Innovation First',
-    description: 'Trying weird things that might fail spectacularly, but sometimes they work and change everything',
+    description:
+      'Trying weird things that might fail spectacularly, but sometimes they work and change everything',
     bgColor: 'bg-black',
     textColor: 'text-white',
   },
   {
     icon: Users,
     title: 'Human-Centered',
-    description: 'Building for real people with real problems, not imaginary users who love every feature',
+    description:
+      'Building for real people with real problems, not imaginary users who love every feature',
     bgColor: 'bg-white',
     textColor: 'text-black',
   },
   {
     icon: Rocket,
     title: 'Scale & Growth',
-    description: 'Helping companies grow without turning into the corporate monster from your nightmares',
+    description:
+      'Helping companies grow without turning into the corporate monster from your nightmares',
     bgColor: 'bg-black',
     textColor: 'text-white',
   },
   {
     icon: Target,
     title: 'Product Design Excellence',
-    description: 'Making things that don\'t make you want to throw your laptop out the window',
+    description:
+      "Making things that don't make you want to throw your laptop out the window",
     bgColor: 'bg-white',
     textColor: 'text-black',
   },
   {
     icon: Heart,
     title: 'Customer Satisfaction',
-    description: 'Actually caring if people like what we built, not just shipping and hoping for the best',
+    description:
+      'Actually caring if people like what we built, not just shipping and hoping for the best',
     bgColor: 'bg-black',
     textColor: 'text-white',
   },
   {
     icon: TrendingUp,
     title: 'Company Scaling',
-    description: 'Growing from "three people in a garage" to "actual business" without losing your soul',
+    description:
+      'Growing from "three people in a garage" to "actual business" without losing your soul',
     bgColor: 'bg-white',
     textColor: 'text-black',
   },
   {
     icon: Lightbulb,
     title: 'Innovation',
-    description: 'Stealing good ideas, making them better, and pretending we thought of them first',
+    description:
+      'Stealing good ideas, making them better, and pretending we thought of them first',
     bgColor: 'bg-black',
     textColor: 'text-white',
   },
   {
     icon: Code,
     title: 'Technical Excellence',
-    description: 'Writing code that future you won\'t hate past you for writing',
+    description: "Writing code that future you won't hate past you for writing",
     bgColor: 'bg-white',
     textColor: 'text-black',
   },
   {
     icon: Award,
     title: 'Quality First',
-    description: 'Not shipping broken stuff just because the deadline said so (most of the time)',
+    description:
+      'Not shipping broken stuff just because the deadline said so (most of the time)',
     bgColor: 'bg-black',
     textColor: 'text-white',
   },
   {
     icon: Zap,
     title: 'Speed & Performance',
-    description: 'Making things fast enough that people don\'t have time to get distracted and leave',
+    description:
+      "Making things fast enough that people don't have time to get distracted and leave",
     bgColor: 'bg-white',
     textColor: 'text-black',
   },
   {
     icon: BarChart3,
     title: 'Data-Driven Decisions',
-    description: 'Using numbers to make choices instead of guessing and hoping we\'re right',
+    description:
+      "Using numbers to make choices instead of guessing and hoping we're right",
     bgColor: 'bg-black',
     textColor: 'text-white',
   },
 ]
 
-
-// Slideshow component
 function Slideshow({ items }: { items: typeof goals }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -137,7 +145,8 @@ function Slideshow({ items }: { items: typeof goals }) {
     }
 
     document.addEventListener('fullscreenchange', handleFullscreenChange)
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    return () =>
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
   }, [])
 
   const toggleFullscreen = async () => {
@@ -191,7 +200,6 @@ function Slideshow({ items }: { items: typeof goals }) {
 
   return (
     <div ref={containerRef} className="relative h-screen w-full">
-      {/* Slideshow Container */}
       <div className="relative h-full w-full overflow-hidden">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -239,7 +247,6 @@ function Slideshow({ items }: { items: typeof goals }) {
         </AnimatePresence>
       </div>
 
-      {/* Navigation Controls */}
       <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-4">
         <Magnetic springOptions={{ bounce: 0.2 }} intensity={0.3}>
           <button
@@ -290,7 +297,6 @@ function Slideshow({ items }: { items: typeof goals }) {
         </Magnetic>
       </div>
 
-      {/* Dots Indicator */}
       <div className="absolute bottom-24 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
         {items.map((_, index) => (
           <button
@@ -303,7 +309,7 @@ function Slideshow({ items }: { items: typeof goals }) {
               className={`h-2 rounded-full transition-all ${
                 index === currentIndex
                   ? 'w-8 bg-black dark:bg-white'
-                  : 'w-2 bg-black/30 dark:bg-white/30 group-hover:bg-black/60 dark:group-hover:bg-white/60'
+                  : 'w-2 bg-black/30 group-hover:bg-black/60 dark:bg-white/30 dark:group-hover:bg-white/60'
               }`}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
@@ -322,4 +328,3 @@ export default function FutureWrapped2026() {
     </main>
   )
 }
-
