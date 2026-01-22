@@ -42,6 +42,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Improving Application Performance: From Database Optimization to ORM Removal',
+    description: 'How I took a sluggish recruitment system and made it fly by optimizing SQL, ditching the ORM, and pushing the limits with some serious stress testing.',
+    link: '/blog/p/optimizing-application-performance-from-db-to-orm',
+    uid: 'blog-9',
+    image: 'https://images.unsplash.com/photo-1708559348128-3cde89847e2b?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'Migrating from Webpack to Vite: How We Slashed Build Times by 70%',
     description: 'When your application demands 8GB of memory just to build, something has gone wrong. This is the story of hitting the scalability wall with CRA and Webpack, and how Vite transformed our deployment pipeline.',
     link: '/blog/p/migrating-from-webpack-to-vite',
@@ -97,7 +104,7 @@ export const BLOG_POSTS: BlogPost[] = [
     uid: 'blog-1',
     image: 'https://lh3.googleusercontent.com/tG6-MqdlvhQ-z7ENzGxR-kpGPPdPHbJ8UZtbTP66Rxi0UftTFU1yAvaBCVuigYuKvESMeEFf4jqNBVENFcZXEUnj8SSqj8zsop8UHAl0eD9A-hUCvQ=w2144-h1206-n-nu-rw'
   },
-  
+
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [

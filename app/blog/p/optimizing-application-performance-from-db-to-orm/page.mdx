@@ -1,0 +1,58 @@
+<Cover
+  src="https://images.unsplash.com/photo-1708559348128-3cde89847e2b?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Performance optimization visualization"
+  caption="Scaling performance: From database scripts to architecture shifts."
+/>
+
+# Making it Fast: My Journey Optimizing a Massive Recruitment System
+
+Let's talk about performance. We’ve all been there—you build something cool, but as soon as the data starts piling up, things start to crawl. I recently got my hands on a huge recruitment system that was feeling a bit sluggish, and I wanted to see just how much I could squeeze out of it. 
+
+Here’s the story of how I went from "waiting for the spinner" to a system that actually flies.
+
+---
+
+## First things first: The Database
+
+I’m a big believer in fixing the foundation before you start redecorating the house. So, I started with the database (good old PostgreSQL). 
+
+One of our main endpoints was taking about **0.624ms** just to fetch data. Now, I know what you’re thinking: "That’s already fast!" But when you’re dealing with a system this big, every tiny fraction of a millisecond counts. 
+
+I rolled up my sleeves and wrote a proper SQL script to handle the data fetching directly. No shortcuts, just clean, optimized SQL. 
+
+**The result?** It dropped down to **0.384ms**. A solid win to start the day!
+
+---
+
+## The Big Bottleneck: Ditching the ORM
+
+Once the database was happy, I looked at the API. This is where things got... interesting. 
+
+The API was taking over **2000ms** (yes, 2 whole seconds!) just to fetch data. Even on a quick reload, it was averaging around **1084ms**. That’s an eternity in "user time."
+
+I spotted the culprit pretty quickly: the ORM. Don't get me wrong, ORMs are great for moving fast, but sometimes they're just too bulky for high-performance needs. I decided to strip the ORM out and go direct.
+
+**The result was a total game-changer.** Response times dropped to **387ms** on average. Seeing that number fall was honestly such a relief.
+
+---
+
+## The Stress Test (The Fun Part)
+
+I couldn't just take my word for it, though. I needed to see if this thing would actually hold up when the world started using it. I ran through four different "stress" levels to see where it would break:
+
+1.  **The Gentle Start (10 Users):** Just a quick check to make sure everything was working. (3 mins)
+2.  **The "Average Day" (50 Users):** Checking for any early hiccups under moderate traffic. (4 mins)
+3.  **The Stress Test (100 Users):** This is where we started pushing the limits. (8 mins)
+4.  **The High Load (500 Users):** The absolute extreme. We held it at 500 users for 10 minutes just to see if it would crash. (16 mins total)
+
+---
+
+## What I Learned (and What's Next)
+
+The tests showed that the system handles 50-100 users like a champ, but once we cross that 100-user mark, it starts to struggle a bit. 
+
+So, what’s the plan? Well, I’ve recommended that we rewrite the backend in **Rust** where it makes sense—because if you want speed, you want Rust. 
+
+I’m also working on a pretty complex caching layer. It’s tricky for a system like this, but the goal is to keep response times under **800ms** even when the site is absolutely buzzing with users.
+
+There’s still more work to do, but it’s been a blast seeing the numbers get smaller and the system get faster. Stay tuned for the next update on how the caching turns out!
