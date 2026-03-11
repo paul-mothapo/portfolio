@@ -67,12 +67,12 @@
 
 /* Accessibility: Enhanced focus indicators */
 :focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #a3a3a3; /* neutral-400 */
   outline-offset: 2px;
 }
 
 .dark :focus-visible {
-  outline-color: #60a5fa;
+  outline-color: #737373; /* neutral-500 */
 }
 
 /* Accessibility: Remove focus outline for mouse users */

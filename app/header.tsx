@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import ArrowBack from '@/components/ui/ArrowBack'
+import { cn } from '@/lib/utils'
 
 export function Header() {
   const pathname = usePathname()
@@ -39,24 +40,35 @@ export function Header() {
           </TextEffect>
         </div>
       </div>
-      {!isHomePage && (
-        <nav className="flex items-center gap-4" aria-label="Page navigation">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-1 text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-            aria-label="Go back to previous page"
-          >
-            <ArrowBack aria-hidden="true" />
-            <span>Back</span>
-          </button>
-          <Link
-            href="/"
-            className="text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-          >
-            Home
-          </Link>
-        </nav>
-      )}
+      <nav className="flex items-center gap-4" aria-label="Main navigation">
+        {!isHomePage && (
+          <>
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-1 text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              aria-label="Go back to previous page"
+            >
+              <ArrowBack aria-hidden="true" />
+              <span>Back</span>
+            </button>
+            <Link
+              href="/"
+              className="text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            >
+              Home
+            </Link>
+          </>
+        )}
+        <Link
+          href="/chat"
+          className={cn(
+            "text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 font-medium",
+            pathname === '/chat' && "text-blue-500 dark:text-blue-400"
+          )}
+        >
+          Chat
+        </Link>
+      </nav>
     </header>
   )
 }
