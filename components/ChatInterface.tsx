@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUp, User, Brain, Loader2, ChevronDown, Sparkles, Maximize2, Minimize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -47,7 +47,10 @@ export default function ChatInterface() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [hasSaved, setHasSaved] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const savedMessageCountRef = useRef(0);
 
   useEffect(() => {
     setNickname(NICKNAMES[Math.floor(Math.random() * NICKNAMES.length)]);
@@ -77,6 +80,33 @@ export default function ChatInterface() {
   useEffect(() => {
     scrollToBraintom();
   }, [messages]);
+
+  const saveConversation = useCallback(async () => {
+    if (messages.length < 2 || savedMessageCountRef.current >= messages.length) return;
+    try {
+      await fetch('/api/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, model: selectedModel }),
+      });
+      savedMessageCountRef.current = messages.length;
+      setHasSaved(true);
+      setTimeout(() => setHasSaved(false), 3000);
+    } catch (err) {
+      console.error('Failed to save conversation:', err);
+    }
+  }, [messages, selectedModel]);
+
+  useEffect(() => {
+    if (messages.length < 2) return;
+    if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+    inactivityTimerRef.current = setTimeout(() => {
+      saveConversation();
+    }, 30000);
+    return () => {
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+    };
+  }, [messages, saveConversation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,14 +271,26 @@ export default function ChatInterface() {
             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
             </div>
-            <div className="p-3 rounded-2xl bg-neutral-100 dark:bg-neutral-800 text-neutral-400 italic text-sm">
-              Thinking...
+            <div className="px-3 py-1 rounded-2xl bg-neutral-100 dark:bg-neutral-800 text-neutral-400 italic text-sm">
+              Let me think...
             </div>
           </motion.div>
         )}
       </div>
 
       <form onSubmit={handleSubmit} className={cn("p-4", isFullscreen && "pb-16 px-6 sm:px-16 md:px-32 lg:px-56 xl:px-56 2xl:px-72")}>
+        <AnimatePresence>
+          {hasSaved && (
+            <motion.p
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-[11px] text-center text-emerald-500 mb-2"
+            >
+              Conversation saved ✓
+            </motion.p>
+          )}
+        </AnimatePresence>
         <div className="relative flex items-center">
           <input
             type="text"
