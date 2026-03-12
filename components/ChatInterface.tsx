@@ -43,6 +43,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingGif, setLoadingGif] = useState('/gifs/thinking.gif');
   const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [nickname, setNickname] = useState('');
@@ -115,6 +116,7 @@ export default function ChatInterface() {
     const userMessage: Message = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setLoadingGif(Math.random() > 0.5 ? '/gifs/thinking.gif' : '/gifs/hmm.gif');
     setIsLoading(true);
 
     try {
@@ -271,8 +273,8 @@ export default function ChatInterface() {
             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
             </div>
-            <div className="px-3 py-1 rounded-2xl bg-neutral-100 dark:bg-neutral-800 text-neutral-400 italic text-sm">
-              Let me think...
+            <div className="flex items-center justify-center">
+              <img src={loadingGif} alt="Thinking..." className="h-20 w-auto object-contain" />
             </div>
           </motion.div>
         )}
