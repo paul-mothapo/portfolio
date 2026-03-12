@@ -230,7 +230,7 @@ export default function ChatInterface() {
                 animate={{ opacity: 1, x: 0 }}
                 className={cn(
                   "flex gap-3",
-                  isFullscreen ? "max-w-[70%] lg:max-w-[60%] xl:max-w-[50%]" : "max-w-[85%]",
+                  isFullscreen ? "max-w-[95%]" : "max-w-[95%]",
                   msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto"
                 )}
               >
