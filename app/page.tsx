@@ -1,11 +1,10 @@
 'use client'
 import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
-import { Spotlight } from '@/components/ui/spotlight'
 import Link from 'next/link'
 import { EMAIL, SOCIAL_LINKS, CURRENT_WORK, BLOG_POSTS } from './data'
-import { Sparkles, ArrowRight } from 'lucide-react'
 import RecentQuestions from '@/components/RecentQuestions'
+import { ProjectCard } from '@/components/ProjectCard'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -127,15 +126,10 @@ export default function Personal() {
         <div>
           <p className="text-zinc-600 dark:text-zinc-400">
             {CURRENT_WORK.map((work, index) => {
-              if (index === 3) return null
-
-              if (index === 2) {
-                const polyglot = CURRENT_WORK[3]
+              if (index === 1) {
                 return (
-                  <span key={work.company}>
-                    <strong className="font-medium text-zinc-800 dark:text-zinc-200">Open Source</strong>
-                    <br />
-                    Creator of{' '}
+                  <span key={work.company} className="block mb-2">
+                    Also part of{' '}
                     <a
                       href={work.link}
                       target="_blank"
@@ -146,25 +140,27 @@ export default function Personal() {
                       {work.company}
                     </a>{' '}
                     {work.description}
-                    <br />
-                    Creator of{' '}
-                    <a
-                      href={polyglot.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline dark:text-zinc-300"
-                      aria-label={`${polyglot.company} (opens in new tab)`}
-                    >
-                      {polyglot.company}
-                    </a>{' '}
-                    {polyglot.description}
                   </span>
                 )
               }
 
+              return (
+                <span key={work.company} className="block mb-2">
+                  At{' '}
+                  <a
+                    href={work.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline dark:text-zinc-300"
+                    aria-label={`${work.company} (opens in new tab)`}
+                  >
+                    {work.company}
+                  </a>{' '}
+                  {work.description}
+                </span>
+              )
             })}
-            <br />
-            <br />I also share my thoughts through{' '}
+            I also share my thoughts through{' '}
             <a
               rel="noopener noreferrer"
               href="https://creators.spotify.com/pod/profile/theidealisticworld"
@@ -259,134 +255,40 @@ export default function Personal() {
           id="projects-heading"
           className="mb-5 text-lg font-medium text-zinc-800 dark:text-zinc-200"
         >
-          More
+          Projects/Research
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <Link
-            href="/more/dysporium-polyglot"
-            className="block"
-            aria-label="Dysporium Polyglot: Simplest way to add multi-language support to any website"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">
-                Dysporium Polyglot
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Simplest way to add multi-language support to any website
-              </p>
-            </motion.article>
-          </Link>
-          <Link
+          <ProjectCard
             href="/more/dysporium-sdk"
-            className="block"
-            aria-label="Dysporium SDK: Simple SDK that allows developers to ship with AI quickly"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">
-                Dysporium SDK
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Simple SDK that allows developers to ship with AI quickly
-              </p>
-            </motion.article>
-          </Link>
-          <Link
-            href="/more/cherry-pick"
-            className="block"
-            aria-label="Cherry-Pick: Enterprise database intelligence system"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">
-                Cherry-Pick
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Enterprise database intelligence system
-              </p>
-            </motion.article>
-          </Link>
-          <Link
-            href="/more/cronsync"
-            className="block"
-            aria-label="CronSync: Distributed job scheduling system"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">
-                CronSync
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Distributed job scheduling system
-              </p>
-            </motion.article>
-          </Link>
-          <Link
-            href="/more/vizcore"
-            className="block"
-            aria-label="VizCore: High-performance data visualization framework"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">
-                VizCore
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                High-performance data visualization framework
-              </p>
-            </motion.article>
-          </Link>
-          <Link
-            href="/more/loglog-core"
-            className="block"
-            aria-label="LogLog Core: Structured logging system"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">
-                LogLog Core
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Structured logging system
-              </p>
-            </motion.article>
-          </Link>
-          <Link
-            href="/more/pauljs"
-            className="block"
-            aria-label="Pauljs: Modern web framework"
-          >
-            <motion.article
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="h-32 w-full rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-            >
-              <h3 className="text-lg font-medium dark:text-zinc-100">Pauljs</h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Modern web framework
-              </p>
-            </motion.article>
-          </Link>
+            title="Dysporium SDK"
+            description="Simple SDK that allows developers to ship with AI quickly"
+            ariaLabel="Dysporium SDK: Simple SDK that allows developers to ship with AI quickly"
+          />
+          <ProjectCard
+            href="/more/simulation-hypo"
+            title="Simulation Hypothesis"
+            description="A Rust-based simulation modeling network latency and physical limits"
+            ariaLabel="A Rust-based simulation modeling network latency and physical limits."
+          />
+          <ProjectCard
+            href="/more/Estate-Optimization-Engine"
+            title="Estate Optimization Engine"
+            description="A jurisdiction-aware planning platform for evaluating wealth-transfer strategies."
+            ariaLabel="A jurisdiction-aware planning platform for evaluating wealth-transfer strategies."
+          />
+          <ProjectCard
+            href="/more/Concilium"
+            title="Concilium"
+            description="A research-oriented Rust prototype for the controlled generation of an artificial language."
+            ariaLabel="A research-oriented Rust prototype for the controlled generation of an artificial language designed to model an unfamiliar, non-human linguistic system."
+          />
+          <ProjectCard
+            href="/more/note-data-format"
+            title="Note Data Format"
+            description="A lightweight structured data language designed to be both human-readable and machine-parsable."
+            ariaLabel="A lightweight structured data language designed to be both human-readable and machine-parsable."
+          />
         </div>
       </motion.section>
 
