@@ -151,7 +151,7 @@ export default function ChatInterface() {
     <div className={cn(
       "flex flex-col w-full mx-auto border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm relative transition-all duration-300 ease-in-out",
       isFullscreen
-        ? "fixed inset-0 z-50 h-screen rounded-none"
+        ? "fixed inset-0 z-50 h-[100dvh] rounded-none"
         : "h-[700px] rounded-2xl z-10"
     )}>
       <div className={cn(
