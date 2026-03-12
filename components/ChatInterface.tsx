@@ -229,7 +229,7 @@ export default function ChatInterface() {
                 initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 className={cn(
-                  "flex gap-3",
+                  "flex gap-3 min-w-0 max-w-[95%]",
                   isFullscreen ? "max-w-[95%]" : "max-w-[95%]",
                   msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto"
                 )}
@@ -241,7 +241,7 @@ export default function ChatInterface() {
                   {msg.role === 'user' ? <User className="w-4 h-4" /> : <Brain className="w-4 h-4 text-slate-600 dark:text-slate-400" />}
                 </div>
                 <div className={cn(
-                  "rounded-2xl text-sm leading-relaxed",
+                  "rounded-2xl text-sm leading-relaxed min-w-0 max-w-full overflow-hidden",
                   msg.role === 'user' 
                     ? "px-3 py-1 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900" 
                     : "px-3 py-1 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 dark:border-neutral-800"
@@ -249,11 +249,17 @@ export default function ChatInterface() {
                   {msg.role === 'user' ? (
                     msg.content
                   ) : (
-                    <div className="prose prose-sm dark:prose-invert max-w-none 
-                      prose-p:leading-relaxed prose-pre:bg-neutral-100 dark:prose-pre:bg-neutral-800 
-                      prose-pre:p-2 prose-pre:rounded-lg prose-code:text-blue-600 dark:prose-code:text-blue-400
+                    <div
+                      className="prose prose-sm dark:prose-invert max-w-none min-w-0 overflow-hidden
+                      prose-p:leading-relaxed
                       prose-headings:text-sm prose-headings:font-semibold prose-headings:mb-2 prose-headings:mt-4
-                      prose-ul:my-2 prose-li:my-0">
+                      prose-ul:my-2 prose-li:my-0
+                      prose-pre:w-full prose-pre:max-w-full prose-pre:overflow-x-auto prose-pre:overflow-y-hidden
+                      prose-pre:whitespace-pre prose-pre:break-normal prose-pre:p-2 prose-pre:rounded-lg
+                      prose-pre:bg-neutral-100 dark:prose-pre:bg-neutral-800
+                      prose-pre:text-zinc-900 dark:prose-pre:text-zinc-100
+                      prose-code:break-words prose-code:text-zinc-900 dark:prose-code:text-zinc-100"
+                    >
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {msg.content}
                       </ReactMarkdown>
