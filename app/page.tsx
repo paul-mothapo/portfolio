@@ -5,6 +5,7 @@ import { Spotlight } from '@/components/ui/spotlight'
 import Link from 'next/link'
 import { EMAIL, SOCIAL_LINKS, CURRENT_WORK, BLOG_POSTS } from './data'
 import { Sparkles, ArrowRight } from 'lucide-react'
+import RecentQuestions from '@/components/RecentQuestions'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -92,6 +93,14 @@ export default function Personal() {
             writing and podcasting.
           </p>
         </div>
+      </motion.section>
+
+      <motion.section
+        variants={VARIANTS_SECTION}
+        transition={TRANSITION_SECTION}
+        aria-label="Recent Chat Questions"
+      >
+        <RecentQuestions />
       </motion.section>
 
       <motion.section
