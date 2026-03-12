@@ -20,22 +20,22 @@ type CurrentWork = {
 export const CURRENT_WORK: CurrentWork[] = [
   {
     company: 'Mirathi',
-    description: 'developing scalable software solutions and distributed systems architecture',
+    description: 'building scalable software and distributed systems.',
     link: 'https://mirathi.co',
   },
   {
     company: 'Movemates',
-    description: 'building the technical infrastructure for a logistics platform that facilitates seamless relocations, from single items to entire office moves',
+    description: 'developing the infrastructure for a logistics platform.',
     link: 'https://movemates.co.za',
   },
   {
     company: 'Dysporium SDK',
-    description: 'An open source simple SDK that allows developers to ship with AI quickly',
+    description: '— ship AI features quickly.',
     link: 'https://github.com/Dysporium/dysporium-ai-sdk',
   },
   {
     company: 'Dysporium Polyglot',
-    description: 'An open source simplest way to add multi-language support to any website. Install once, translate everywhere.',
+    description: '— add multilingual support to any website.',
     link: 'https://github.com/Dysporium/dysporium-polyglot',
   },
 ]

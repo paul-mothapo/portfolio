@@ -82,16 +82,26 @@ export default function Personal() {
           <h1 id="about-heading" className="mb-5 text-lg font-medium">
             About Me
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Software engineer building distributed systems and developer
-            tooling. I architect scalable applications with modern monorepo
-            structures and microservices patterns. Currently developing
-            enterprise solutions at Mirathi and contributing to Movemates'
-            logistics platform. Creator of open-source tools including Dysporium
-            SDK for AI integration, Polyglot for internationalization, and NDF
-            data format. I share insights on software architecture through
-            writing and podcasting.
-          </p>
+          <ul className="list-disc space-y-2 pl-5 text-zinc-600 dark:text-zinc-400">
+            <li>
+              i&apos;m a software engineer who enjoys <strong>building systems and tools</strong>.
+            </li>
+            <li>
+              most of my work lives somewhere between <strong>data, design, and product ideas.</strong>
+            </li>
+            <li>
+              i like turning messy real-world problems into <strong>structured software solutions.</strong>
+            </li>
+            <li>
+              when i&apos;m not coding, i&apos;m usually watching cartoons (family guy, rick and morty, and others).
+            </li>
+            <li>
+              as a <strong>polymath</strong>, i tend to indulge in science stuff and a whole lot of things i&apos;m curious about.
+            </li>
+            <li>
+              one of my quiet interests? understanding <strong>how technology shapes human behavior.</strong>
+            </li>
+          </ul>
         </div>
       </motion.section>
 
@@ -118,11 +128,13 @@ export default function Personal() {
           <p className="text-zinc-600 dark:text-zinc-400">
             {CURRENT_WORK.map((work, index) => {
               if (index === 3) return null
-              
+
               if (index === 2) {
                 const polyglot = CURRENT_WORK[3]
                 return (
                   <span key={work.company}>
+                    <strong className="font-medium text-zinc-800 dark:text-zinc-200">Open Source</strong>
+                    <br />
                     Creator of{' '}
                     <a
                       href={work.link}
@@ -132,8 +144,10 @@ export default function Personal() {
                       aria-label={`${work.company} (opens in new tab)`}
                     >
                       {work.company}
-                    </a>
-                    , {work.description}, and{' '}
+                    </a>{' '}
+                    {work.description}
+                    <br />
+                    Creator of{' '}
                     <a
                       href={polyglot.link}
                       target="_blank"
@@ -142,43 +156,12 @@ export default function Personal() {
                       aria-label={`${polyglot.company} (opens in new tab)`}
                     >
                       {polyglot.company}
-                    </a>
-                    , {polyglot.description}.
-                    {index < CURRENT_WORK.length - 2 && (
-                      <>
-                        <br />
-                        <br />
-                      </>
-                    )}
+                    </a>{' '}
+                    {polyglot.description}
                   </span>
                 )
               }
-              
-              return (
-                <span key={work.company}>
-                  {index === 0
-                    ? 'Currently at '
-                    : index === 1
-                      ? "Outside of my primary role, I'm also part of the team developing "
-                      : 'Also helping develop '}
-                  <a
-                    href={work.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline dark:text-zinc-300"
-                    aria-label={`${work.company} (opens in new tab)`}
-                  >
-                    {work.company}
-                  </a>
-                  , {work.description}.
-                  {index < CURRENT_WORK.length - 2 && (
-                    <>
-                      <br />
-                      <br />
-                    </>
-                  )}
-                </span>
-              )
+
             })}
             <br />
             <br />I also share my thoughts through{' '}
@@ -280,7 +263,7 @@ export default function Personal() {
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <Link
+          <Link
             href="/more/dysporium-polyglot"
             className="block"
             aria-label="Dysporium Polyglot: Simplest way to add multi-language support to any website"
