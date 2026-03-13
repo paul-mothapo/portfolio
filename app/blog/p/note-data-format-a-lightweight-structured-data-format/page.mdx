@@ -1,0 +1,88 @@
+<Cover
+  src="https://images.unsplash.com/photo-1759583545970-0106ff47353f?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Abstract glass structure with iridescent light reflections - from unsplash.com"
+  caption="Abstract glass structure with iridescent light reflections - from unsplash.com"
+/>
+
+# Note Data Format: A Lightweight Structured Data Format
+
+Note Data Format (NDF) is a lightweight structured data format designed for human-readable notes and efficient machine parsing. It prioritizes minimal syntax, compact representation, and single-pass parsing while remaining intuitive to write by hand.
+
+## Design Goals
+
+- **Human-readable note-style syntax**: Designed to look like natural notes.
+- **Compact representation**: Significantly less overhead than JSON.
+- **Deterministic single-pass parsing**: Built for speed and efficiency.
+- **Minimal structural overhead**: Focus on the data, not the syntax.
+- **AI-friendly**: Optimized token usage for Large Language Model workflows.
+
+## Why NDF?
+
+In the age of AI and distributed systems, the way we represent data matters. JSON, while universal, can be verbose and token-heavy. YAML is powerful but often complex for simple note-taking. NDF fills the gap by providing a format that is as easy to read as a bulleted list but as structured as a database record.
+
+## Example Structure
+
+The power of NDF lies in its simplicity. Here is how a simple user object looks:
+
+```
+user:
+  name: Alice
+  age: 30
+  tags: python ai ml
+```
+
+Notice the lack of quotes, braces, and commas. The structure is defined by indentation and simple delimiters, making it incredibly fast to write and easy for machines to parse in a single pass.
+
+## NDF vs. The World: How It Compares
+
+To understand where NDF fits, let's look at how it handles a standard configuration object compared to other popular formats.
+
+### The Standard: JSON
+```json
+{
+  "project": "NoteDF",
+  "meta": {
+    "version": 1.0,
+    "tags": ["ai", "notes"]
+  }
+}
+```
+
+### The Human-Friendly: YAML
+```yaml
+project: NoteDF
+meta:
+  version: 1.0
+  tags: [ai, notes]
+```
+
+### The Minimalist: NDF
+```
+project: NoteDF
+meta:
+  version: 1.0
+  tags: ai notes
+```
+
+### Detailed Analysis
+
+- **JSON**: The industry standard for machine-to-machine communication. However, the requirement for quotes on keys, braces, and commas makes it the least efficient format for AI context windows and the most painful to write by hand without an IDE.
+- **YAML**: A significant improvement for human readability. Its reliance on indentation inspired NDF. However, YAML's specification is massive, leading to complex parsers and unpredictable edge cases like the "Norway Problem."
+- **TOML**: Excellent for simple configuration files. It's more explicit than YAML which prevents many bugs, but it becomes "noisy" when representing nested structures or long lists due to repeated key paths.
+- **NDF**: Strips away everything except the essential structure. By treating lists as space-separated tokens and removing the need for quotes or brackets, NDF achieves a "zero-overhead" feel. It is designed specifically for the two most common modern data interfaces: the human hand and the AI context window.
+
+## Architecture
+
+The backbone of NDF is built on a few core principles:
+
+1.  **Indentation-based Hierarchy**: Like Python, NDF uses whitespace to define scope and relationships.
+2.  **Lightweight Grammar**: The parser follows a strict but minimal set of rules to ensure deterministic behavior.
+3.  **Token Efficiency**: By removing boilerplate characters, NDF reduces the token count, which is a critical optimization for AI prompt engineering and data interchange.
+
+## Conclusion
+
+NDF is more than just another data format; it's a step towards more natural human-machine interaction. Whether you're configuring a complex system, taking structured notes, or building the next generation of AI agents, NDF provides the clarity and efficiency you need.
+
+---
+
+*Check out the project on [GitHub](https://github.com/Dysporium/note-data-format).*

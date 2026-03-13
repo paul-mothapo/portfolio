@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Note Data Format: A Lightweight Structured Data Format',
+    description: 'Note Data Format (NDF) is a lightweight structured data format designed for human-readable notes and efficient machine parsing.',
+    link: '/blog/p/note-data-format-a-lightweight-structured-data-format',
+    uid: 'blog-10',
+    image: 'https://images.unsplash.com/photo-1759583545970-0106ff47353f?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'Improving Application Performance: From Database Optimization to ORM Removal',
     description: 'How I took a sluggish recruitment system and made it fly by optimizing SQL, ditching the ORM, and pushing the limits with some serious stress testing.',
     link: '/blog/p/optimizing-application-performance-from-db-to-orm',
