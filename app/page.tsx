@@ -160,18 +160,31 @@ export default function Personal() {
                 </span>
               )
             })}
-            I also share my thoughts through{' '}
+            I also share my thoughts through writing and podcasting.
+          </p>
+        </div>
+        <div className="mt-6 space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-zinc-700 dark:text-zinc-300">
+            More from me
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/thoughts"
+              className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              aria-label="Read my thoughts"
+            >
+              Thoughts
+            </Link>
             <a
               rel="noopener noreferrer"
               href="https://creators.spotify.com/pod/profile/theidealisticworld"
               target="_blank"
-              className="underline dark:text-zinc-300"
+              className="inline-flex items-center justify-center rounded-full border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-500"
               aria-label="The Idealistic World podcast on Spotify (opens in new tab)"
             >
-              podcasting
-            </a>{' '}
-            and writing.
-          </p>
+              Podcast
+            </a>
+          </div>
         </div>
       </motion.section>
 

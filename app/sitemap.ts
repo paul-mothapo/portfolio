@@ -42,6 +42,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: 'https://paulmothapo.co.za/thoughts',
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
       url: 'https://paulmothapo.co.za/blog/p',
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
