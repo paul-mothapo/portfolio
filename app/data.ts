@@ -132,6 +132,17 @@ export function getBlogPostBySlug(slug: string): BlogPost {
   return post
 }
 
+export function getBlogPostSeoInput(slug: string) {
+  const post = getBlogPostBySlug(slug)
+
+  return {
+    title: post.title,
+    description: post.description,
+    path: post.link,
+    image: post.image,
+  }
+}
+
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     label: 'Github',

@@ -1,21 +1,11 @@
-import { getBlogPostBySlug } from '@/app/data'
+import { getBlogPostSeoInput } from '@/app/data'
 import { JsonLd, buildArticleSchema, createArticleMetadata } from '@/lib/seo'
 
-const post = getBlogPostBySlug('ai-engineering-integrating-intelligence-into-applications')
+export const metadata = createArticleMetadata(
+  getBlogPostSeoInput('ai-engineering-integrating-intelligence-into-applications')
+)
 
-export const metadata = createArticleMetadata({
-  title: post.title,
-  description: post.description,
-  path: post.link,
-  image: post.image,
-})
-
-<JsonLd data={buildArticleSchema({
-  title: post.title,
-  description: post.description,
-  path: post.link,
-  image: post.image,
-})} />
+<JsonLd data={buildArticleSchema(getBlogPostSeoInput('ai-engineering-integrating-intelligence-into-applications'))} />
 <Cover
   src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   alt="Abstract AI neural network visualization - from unsplash.com"
