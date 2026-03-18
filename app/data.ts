@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'How Systems Develop Intentionality Through Pure Action Sequencing',
+    description: 'A plain-language explanation of what emergent intentionality research is trying to prove, and why adaptation without explicit reasoning matters.',
+    link: '/blog/p/how-systems-develop-intentionality-through-pure-action-sequencing',
+    uid: 'blog-11',
+    image: 'https://images.unsplash.com/photo-1771924310799-930349452c76?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'Note Data Format: A Lightweight Structured Data Format',
     description: 'Note Data Format (NDF) is a lightweight structured data format designed for human-readable notes and efficient machine parsing.',
     link: '/blog/p/note-data-format-a-lightweight-structured-data-format',
@@ -103,6 +110,17 @@ export const BLOG_POSTS: BlogPost[] = [
   },
 
 ]
+
+const blogUidToNumber = (uid: string) => {
+  const match = uid.match(/\d+/)
+  return match ? Number(match[0]) : 0
+}
+
+export const BLOG_POSTS_SORTED: BlogPost[] = [...BLOG_POSTS].sort((a, b) => {
+  const diff = blogUidToNumber(b.uid) - blogUidToNumber(a.uid)
+  if (diff !== 0) return diff
+  return a.title.localeCompare(b.title)
+})
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {

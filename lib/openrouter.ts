@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { BLOG_POSTS_SORTED } from '@/app/data';
+import { WEBSITE_URL } from '@/lib/constants';
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -28,6 +30,11 @@ export async function sendChatMessage(messages: ChatMessage[], model: string = D
     throw new Error('OPENROUTER_API_KEY is not configured');
   }
 
+  const blogIndex = BLOG_POSTS_SORTED.map((post) => {
+    const absoluteUrl = `${WEBSITE_URL}${post.link}`;
+    return `- ${post.title}\n  url: ${post.link} (absolute: ${absoluteUrl})\n  description: ${post.description}`;
+  }).join('\n');
+
   const response = await fetch(OPENROUTER_URL, {
     method: 'POST',
     headers: {
@@ -44,6 +51,11 @@ export async function sendChatMessage(messages: ChatMessage[], model: string = D
           content: `You are Paul's Buddy, a helpful and friendly assistant on his portfolio website.
 You have access to Paul's blogs and projects. Use this information to answer questions about his work, expertise, and thoughts.
 Be professional yet approachable, friendly, and concise.
+
+BLOG INDEX (authoritative):
+${blogIndex}
+
+When someone asks about Paul's writing, list relevant posts from the blog index and include their URLs. When referencing a specific post, prefer using the exact URL from the index.
 
 CRITICAL INSTRUCTION: IF AND ONLY IF someone asks you specifically about Paul's residence/where he stays, his family, or his relationship status, you MUST reply ONLY with a randomly chosen one of these two exact markdown strings and nothing else:
 - ![look](/gifs/look.gif)

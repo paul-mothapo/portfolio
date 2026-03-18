@@ -2,7 +2,7 @@
 import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import Link from 'next/link'
-import { EMAIL, SOCIAL_LINKS, CURRENT_WORK, BLOG_POSTS } from './data'
+import { EMAIL, SOCIAL_LINKS, CURRENT_WORK, BLOG_POSTS_SORTED } from './data'
 import RecentQuestions from '@/components/RecentQuestions'
 import { ProjectCard } from '@/components/ProjectCard'
 
@@ -107,14 +107,6 @@ export default function Personal() {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        aria-label="Recent Chat Questions"
-      >
-        <RecentQuestions />
-      </motion.section>
-
-      <motion.section
-        variants={VARIANTS_SECTION}
-        transition={TRANSITION_SECTION}
         aria-labelledby="work-heading"
       >
         <h2
@@ -184,6 +176,13 @@ export default function Personal() {
             >
               Podcast
             </a>
+            <Link
+              href="/blog"
+              className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              aria-label="Read my blog posts"
+            >
+              Blog
+            </Link>
           </div>
         </div>
       </motion.section>
@@ -200,9 +199,9 @@ export default function Personal() {
           Featured Blog
         </h2>
         <Link
-          href={BLOG_POSTS[0].link}
+          href={BLOG_POSTS_SORTED[0].link}
           className="group block"
-          aria-label={`Read blog post: ${BLOG_POSTS[0].title}`}
+          aria-label={`Read blog post: ${BLOG_POSTS_SORTED[0].title}`}
         >
           <motion.article
             whileHover={{ scale: 1.01 }}
@@ -212,10 +211,10 @@ export default function Personal() {
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
               style={{
-                backgroundImage: `url(${BLOG_POSTS[0].image})`,
+                backgroundImage: `url(${BLOG_POSTS_SORTED[0].image})`,
               }}
               role="img"
-              aria-label={`Cover image for ${BLOG_POSTS[0].title}`}
+              aria-label={`Cover image for ${BLOG_POSTS_SORTED[0].title}`}
             />
             <div
               className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"
@@ -226,38 +225,15 @@ export default function Personal() {
                 Latest Post
               </span>
               <h3 className="text-xl font-medium text-white">
-                {BLOG_POSTS[0].title}
+                {BLOG_POSTS_SORTED[0].title}
               </h3>
               <p className="mt-2 line-clamp-2 text-sm text-zinc-300">
-                {BLOG_POSTS[0].description}
+                {BLOG_POSTS_SORTED[0].description}
               </p>
             </div>
           </motion.article>
         </Link>
       </motion.section>
-
-      <Link href="/blog" className="block" aria-label="View all blog posts">
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="relative h-32 w-full overflow-hidden rounded-lg bg-zinc-100 p-6 text-left transition-colors hover:bg-zinc-200 dark:border dark:border-zinc-600 dark:bg-zinc-900/80 dark:hover:bg-zinc-800/80"
-          style={{
-            backgroundImage: 'url(/world.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-          role="img"
-          aria-label="World map background"
-        >
-          <div className="relative z-10 -m-6 flex h-full flex-col p-6">
-            <span className="text-2xl font-medium text-white">Blog</span>
-            <span className="text-md mt-2 text-zinc-200">
-              Read my thoughts on human progress
-            </span>
-          </div>
-        </motion.div>
-      </Link>
 
       <motion.section
         variants={VARIANTS_SECTION}
@@ -303,6 +279,14 @@ export default function Personal() {
             ariaLabel="A lightweight structured data language designed to be both human-readable and machine-parsable."
           />
         </div>
+      </motion.section>
+      
+      <motion.section
+        variants={VARIANTS_SECTION}
+        transition={TRANSITION_SECTION}
+        aria-label="Recent Chat Questions"
+      >
+        <RecentQuestions />
       </motion.section>
 
       <motion.section

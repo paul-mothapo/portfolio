@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { Magnetic } from '@/components/ui/magnetic'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
-import { BLOG_POSTS, EMAIL, SOCIAL_LINKS } from '../data'
+import { BLOG_POSTS_SORTED, EMAIL, SOCIAL_LINKS } from '../data'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -83,7 +83,7 @@ export default function Blog() {
               duration: 0.2,
             }}
           >
-            {BLOG_POSTS.map((post) => (
+            {BLOG_POSTS_SORTED.map((post) => (
               <Link
                 key={post.uid}
                 className="-mx-3 w-full rounded-xl px-3 py-3 dark:border dark:border-zinc-800"
