@@ -11,30 +11,102 @@ interface Question {
   timestamp: string;
 }
 
+const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
+const CACHE_KEY = 'recent-questions-cache';
+
+type CachedQuestions = {
+  questions: Question[];
+  fetchedAt: number;
+};
+
 export default function RecentQuestions() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
+
+    const readCache = (): CachedQuestions | null => {
+      try {
+        const raw = window.localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw) as CachedQuestions;
+        if (!Array.isArray(parsed.questions) || typeof parsed.fetchedAt !== 'number') {
+          return null;
+        }
+
+        return parsed;
+      } catch {
+        return null;
+      }
+    };
+
+    const writeCache = (cachedQuestions: Question[]) => {
+      try {
+        window.localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            questions: cachedQuestions,
+            fetchedAt: Date.now(),
+          } satisfies CachedQuestions),
+        );
+      } catch {
+        // Ignore storage failures and fall back to a normal fetch cycle.
+      }
+    };
+
     async function fetchQuestions() {
       try {
         const res = await fetch('/api/conversations');
         const data = await res.json();
-        if (data.questions) {
+        if (!cancelled && data.questions) {
           setQuestions(data.questions);
+          writeCache(data.questions);
         }
       } catch (err) {
         console.error('Failed to fetch recent questions:', err);
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
-    fetchQuestions();
-    
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchQuestions, 30000);
-    return () => clearInterval(interval);
+    const scheduleNextFetch = (delayMs: number) => {
+      timeoutId = setTimeout(() => {
+        void fetchQuestions().finally(() => {
+          if (!cancelled) {
+            scheduleNextFetch(EIGHT_HOURS_MS);
+          }
+        });
+      }, delayMs);
+    };
+
+    const cached = readCache();
+    const now = Date.now();
+
+    if (cached) {
+      setQuestions(cached.questions);
+      setLoading(false);
+    }
+
+    const hasFreshCache = cached && now - cached.fetchedAt < EIGHT_HOURS_MS;
+    if (hasFreshCache) {
+      scheduleNextFetch(cached.fetchedAt + EIGHT_HOURS_MS - now);
+    } else {
+      void fetchQuestions().finally(() => {
+        if (!cancelled) {
+          scheduleNextFetch(EIGHT_HOURS_MS);
+        }
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   if (loading || questions.length === 0) return null;
