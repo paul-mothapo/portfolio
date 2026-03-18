@@ -1,4 +1,4 @@
-type BlogPost = {
+export type BlogPost = {
   title: string
   description: string
   link: string
@@ -121,6 +121,16 @@ export const BLOG_POSTS_SORTED: BlogPost[] = [...BLOG_POSTS].sort((a, b) => {
   if (diff !== 0) return diff
   return a.title.localeCompare(b.title)
 })
+
+export function getBlogPostBySlug(slug: string): BlogPost {
+  const post = BLOG_POSTS.find((entry) => entry.link.endsWith(`/${slug}`))
+
+  if (!post) {
+    throw new Error(`Blog post not found for slug: ${slug}`)
+  }
+
+  return post
+}
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {

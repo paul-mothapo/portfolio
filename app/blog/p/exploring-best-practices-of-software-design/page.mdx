@@ -1,3 +1,21 @@
+import { getBlogPostBySlug } from '@/app/data'
+import { JsonLd, buildArticleSchema, createArticleMetadata } from '@/lib/seo'
+
+const post = getBlogPostBySlug('exploring-best-practices-of-software-design')
+
+export const metadata = createArticleMetadata({
+  title: post.title,
+  description: post.description,
+  path: post.link,
+  image: post.image,
+})
+
+<JsonLd data={buildArticleSchema({
+  title: post.title,
+  description: post.description,
+  path: post.link,
+  image: post.image,
+})} />
 <Cover
   src="https://lh3.googleusercontent.com/tG6-MqdlvhQ-z7ENzGxR-kpGPPdPHbJ8UZtbTP66Rxi0UftTFU1yAvaBCVuigYuKvESMeEFf4jqNBVENFcZXEUnj8SSqj8zsop8UHAl0eD9A-hUCvQ=w2144-h1206-n-nu-rw"
   alt="Image from google deep mind - from deepmind.google"

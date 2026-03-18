@@ -5,6 +5,19 @@ import { Header } from './header'
 import { Footer } from './footer'
 import { ThemeProvider } from 'next-themes'
 import Script from 'next/script'
+import { SOCIAL_LINKS } from './data'
+import {
+  JsonLd,
+  buildPersonSchema,
+  buildWebsiteSchema,
+} from '@/lib/seo'
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  WEBSITE_URL,
+} from '@/lib/constants'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -14,22 +27,41 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Paul Mothapo',
-    template: '%s | Paul Mothapo'
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`
   },
-  description:
-    'Paul Mothapo is a software engineer with a passion for building products that help people live better lives.',
-  metadataBase: new URL('https://paulmothapo.co.za'),
+  description: DEFAULT_DESCRIPTION,
+  metadataBase: new URL(WEBSITE_URL),
+  applicationName: SITE_NAME,
+  keywords: DEFAULT_KEYWORDS,
+  authors: [{ name: SITE_NAME, url: WEBSITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: 'technology',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'Paul Mothapo',
-    description: 'Paul Mothapo is a software engineer with a passion for building products that help people live better lives.',
+    title: SITE_NAME,
+    description: DEFAULT_DESCRIPTION,
     type: 'website',
-    locale: 'en_US',
+    locale: 'en_ZA',
+    siteName: SITE_NAME,
+    url: WEBSITE_URL,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Paul Mothapo',
-    description: 'Paul Mothapo is a software engineer with a passion for building products that help people live better lives.',
+    title: SITE_NAME,
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   robots: {
     index: true,
@@ -59,6 +91,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const sameAs = SOCIAL_LINKS.map((link) => link.link)
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -75,6 +109,7 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${jakarta.variable} bg-white tracking-tight antialiased dark:bg-zinc-950`}
       >
+        <JsonLd data={[buildWebsiteSchema(), buildPersonSchema(sameAs)]} />
         <noscript>
           <iframe 
             src="https://www.googletagmanager.com/ns.html?id=GTM-NBP5FVKP"
@@ -87,7 +122,7 @@ export default function RootLayout({
           enableSystem={true}
           attribute="class"
           storageKey="theme"
-          defaultTheme="white"
+          defaultTheme="light"
         >
           <a href="#main-content" className="skip-to-content">
             Skip to main content

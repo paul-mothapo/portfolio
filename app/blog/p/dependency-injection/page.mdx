@@ -1,3 +1,21 @@
+import { getBlogPostBySlug } from '@/app/data'
+import { JsonLd, buildArticleSchema, createArticleMetadata } from '@/lib/seo'
+
+const post = getBlogPostBySlug('dependency-injection')
+
+export const metadata = createArticleMetadata({
+  title: post.title,
+  description: post.description,
+  path: post.link,
+  image: post.image,
+})
+
+<JsonLd data={buildArticleSchema({
+  title: post.title,
+  description: post.description,
+  path: post.link,
+  image: post.image,
+})} />
 <Cover
   src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   alt="Modular code architecture with dependency injection - from unsplash.com"
@@ -187,4 +205,3 @@ Remember: the goal isn't to inject every dependency everywhere. It's to create t
 - [Design Patterns: Elements of Reusable Object-Oriented Software](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612) - The classic reference on software design patterns
 
 - [Refactoring](https://www.amazon.com/Refactoring-Improving-Design-Existing-Code/dp/0201485672) by Martin Fowler - Techniques for improving code structure, including dependency management
-
