@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { execFileSync } from 'node:child_process'
 import type { Metadata } from 'next'
 import { JsonLd, buildCollectionPageSchema, createMetadata } from '@/lib/seo'
 
@@ -8,7 +9,7 @@ type PdfEntry = {
   filename: string
   href: string
   sizeLabel: string
-  updatedLabel: string
+  publishedLabel: string
   tags: string[]
 }
 
@@ -58,6 +59,32 @@ const formatDate = (date: Date) =>
     day: '2-digit',
   }).format(date)
 
+const getPublishedDate = (fullPath: string, fallback: Date) => {
+  try {
+    const output = execFileSync('git', ['log', '--follow', '--reverse', '--format=%cI', '--', fullPath], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+
+    const firstCommitDate = output
+      .split('\n')
+      .map((line) => line.trim())
+      .find(Boolean)
+
+    if (firstCommitDate) {
+      const parsedDate = new Date(firstCommitDate)
+      if (!Number.isNaN(parsedDate.getTime())) {
+        return parsedDate
+      }
+    }
+  } catch {
+    // Fall back to the file timestamp when Git history is unavailable.
+  }
+
+  return fallback
+}
+
 async function getPdfEntries(): Promise<PdfEntry[]> {
   try {
     const entries = await fs.readdir(THOUGHTS_DIR, { withFileTypes: true })
@@ -69,22 +96,23 @@ async function getPdfEntries(): Promise<PdfEntry[]> {
       pdfFiles.map(async (filename) => {
         const fullPath = path.join(THOUGHTS_DIR, filename)
         const stat = await fs.stat(fullPath)
+        const published = getPublishedDate(fullPath, stat.mtime)
         return {
           filename,
-          updated: stat.mtime,
+          published,
           size: stat.size,
         }
       }),
     )
 
     return stats
-      .sort((a, b) => b.updated.getTime() - a.updated.getTime())
+      .sort((a, b) => b.published.getTime() - a.published.getTime())
       .map((entry) => ({
         title: titleFromFilename(entry.filename),
         filename: entry.filename,
         href: `/thoughts/${entry.filename}`,
         sizeLabel: formatBytes(entry.size),
-        updatedLabel: formatDate(entry.updated),
+        publishedLabel: formatDate(entry.published),
         tags: extractTags(entry.filename),
       }))
   } catch (error) {
@@ -105,7 +133,7 @@ export default async function PdfsPage() {
           items: pdfs.map((pdf) => ({
             name: pdf.title || pdf.filename,
             url: pdf.href,
-            description: `PDF document updated ${pdf.updatedLabel}`,
+            description: `PDF document published ${pdf.publishedLabel}`,
           })),
         })}
       />
@@ -140,7 +168,7 @@ export default async function PdfsPage() {
                       <div className="text-sm text-zinc-500 dark:text-zinc-400">
                         <span>{pdf.sizeLabel}</span>
                         <span className="mx-2">•</span>
-                        <span>Updated {pdf.updatedLabel}</span>
+                        <span>Published {pdf.publishedLabel}</span>
                       </div>
                       {pdf.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 text-xs">
