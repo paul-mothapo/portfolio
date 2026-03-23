@@ -23,7 +23,7 @@ export function Header() {
       <div className="flex items-center gap-2">
         <Link href="/" aria-label="Paul Mothapo - Go to homepage">
           <Image
-            src="/me.png"
+            src="/_.jpeg"
             alt=""
             width={60}
             height={60}
