@@ -77,7 +77,7 @@ export function Footer() {
           aria-label="View portfolio source code on GitHub (opens in new tab)"
         >
           <TextLoop className="text-xs text-zinc-500" aria-live="polite">
-            <span>© 2025 Paul Mothapo.</span>
+            <span>© 2026 Paul Mothapo.</span>
             <span>Built with Motion-Primitives.</span>
           </TextLoop>
         </a>
