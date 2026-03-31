@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Why Is It Hard to Scale an Application?',
+    description: 'Scaling isn\'t just about throwing more hardware at the problem. It\'s about architecture, infrastructure, deployment strategy, and the deliberate choices you make long before you ever need to handle a million users.',
+    link: '/blog/p/why-is-it-hard-to-scale-an-application',
+    uid: 'blog-12',
+    image: 'https://images.unsplash.com/photo-1703496666015-364ed4de02c1?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'How Systems Develop Intentionality Through Pure Action Sequencing',
     description: 'A plain-language explanation of what emergent intentionality research is trying to prove, and why adaptation without explicit reasoning matters.',
     link: '/blog/p/how-systems-develop-intentionality-through-pure-action-sequencing',
