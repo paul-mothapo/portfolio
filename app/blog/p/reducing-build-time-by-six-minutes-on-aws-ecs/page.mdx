@@ -1,0 +1,103 @@
+import { getBlogPostSeoInput } from '@/app/data'
+import { JsonLd, buildArticleSchema, createArticleMetadata } from '@/lib/seo'
+
+export const metadata = createArticleMetadata(
+  getBlogPostSeoInput('reducing-build-time-by-six-minutes-on-aws-ecs')
+)
+
+<JsonLd data={buildArticleSchema(getBlogPostSeoInput('reducing-build-time-by-six-minutes-on-aws-ecs'))} />
+<Cover
+  src="https://images.unsplash.com/photo-1773058373644-74e4120bfc77?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Build pipeline optimization visualization"
+  caption="Shrink build time, reduce risk, and optimize both pipeline and infrastructure."
+/>
+
+# Reducing Build Time by Six Minutes on AWS ECS
+
+Every fast-growing application eventually hits a wall with its build pipeline. You keep adding new features, dependencies pile up, and before you know it, what used to be a snappy deployment process becomes a dreaded waiting game. This is the story of how I tackled a bloated deployment pipeline, trimming legacy drag and optimizing our AWS ECS build process to cut validation time from a painful 16 minutes down to 10. 
+
+I've always believed that developer velocity is tied directly to the speed of your feedback loops. When your CI/CD pipeline takes too long, you hesitate to ship small fixes. You start batching changes, which increases risk. The goal is always to keep the pipeline as lean as possible, not just for the sake of metrics, but to preserve engineering momentum.
+
+---
+
+## The Soft Cost of Legacy Code
+
+Legacy code isn't just a nostalgic archive of past architectural decisions. It often serves as a reference library or a fallback, making it psychologically difficult to delete. But there's a hidden, continuous tax you pay for keeping it around.
+
+When you leave unused or dormant modules in your project, every single build process has to parse, transform, and bundle them. This extra weight might seem negligible at first, but it compounds. The penalty becomes glaringly obvious after your tenth deployment of the day.
+
+At the time, our deployment pipeline was averaging **16 minutes** for a patch. For a team trying to move quickly, that felt unacceptable. Five minutes of validation is a reasonable safety check. Fifteen minutes is a context-switching nightmare where developers lose their train of thought.
+
+---
+
+## Why Standard Runners Were Not Enough
+
+We relied on GitHub Actions for our CI pipeline, and while the platform is excellent, the standard runner limits—2 vCPUs and 7GB RAM—became a hard ceiling for our large application containing over **100k+ files**.
+
+This configuration is perfectly adequate for the majority of projects, but for our monolithic structure, it meant that even the simplest hotfix took too long to validate. We were paying for the convenience of managed runners with our most valuable resource: waiting time. 
+
+---
+
+## The First Cut: Pruning the Dead Weight
+
+Rather than immediately throwing money at larger runners or complex infrastructure changes, I prefer to start with the codebase itself. The most effective optimization is often simply doing less work.
+
+I undertook an extensive audit of the repository, systematically identifying and removing dormant code paths, deprecated components, and unused dependencies. It wasn't a glamorous task—it was the digital equivalent of finally cleaning out the garage.
+
+The results, however, were immediate:
+- Less code for the bundler to process
+- Fewer files for the type checker to scan
+- Reduced memory pressure during the build phase
+
+This effort alone brought our average build time from **16 minutes** down to **10 minutes**. While 10 minutes was still higher than my ultimate goal, it served as concrete proof that every megabyte of dead code exerts a real cost on the deployment pipeline.
+
+---
+
+## Building Smarter on AWS ECS
+
+With the application significantly lighter, I shifted focus to our deployment infrastructure. Since we deploy our containers to AWS Elastic Container Service (ECS), the objective was to optimize the container build environment itself.
+
+We implemented aggressive build layer caching alongside `pnpm` to target a **5-minute** maximum build time window. Caching is incredibly powerful for accelerating repeated build steps, but it comes with known trade-offs:
+
+- **Dependency drift**: Caches can mask issues if not properly invalidated
+- **Reproducibility**: Sometimes failing builds are hard to replicate locally if relying on stale cache states
+- **Ghost behavior**: Old code can occasionally survive in a stale cache
+
+To mitigate these risks, I paired the caching mechanism with a strict cleanup strategy. We configured a cron job to forcibly clear and rebuild the cache every five days. This ensured we reaped the performance benefits of caching while maintaining the integrity and predictability of our builds.
+
+---
+
+## The Trade-off That Made It Worth It
+
+This wasn't just about shaving minutes off a metric; it was about defining a sustainable deployment strategy. The plan was methodical:
+
+1. Prune unused code to reduce the fundamental bundle size
+2. Optimize ECS container builds and implement intelligent caching
+3. Enforce regular cache invalidation to prevent staleness
+
+The payoff was a meaningful shift in our ability to validate changes quickly. It fostered a culture where pushing small, iterative improvements felt effortless again, rather than a chore.
+
+---
+
+## In My Closing
+
+For an engineering team, build time is much more than a comfort metric. It represents trust in the system, momentum in product development, and the agility to ship fixes confidently. 
+
+Cutting our build time from **16 minutes** to **10 minutes** was a crucial step toward a more resilient delivery pipeline, but it’s not the destination. The focus now is on closing the gap to that ideal **5-minute** window through continuous refinement. 
+
+In large-scale applications, significant performance gains are rarely the result of a single silver bullet. They are the sum of many deliberate, small improvements. By keeping legacy code in check and optimizing our infrastructure, we ensured our pipeline accelerates our workflow instead of hindering it.
+
+---
+
+### Questions for Reflection
+
+- How long does your current deployment pipeline take, and how does that impact how often you deploy?
+- Are you carrying unnecessary dead code that is quietly taxing your build processes?
+- What caching strategies do you employ in your CI/CD setup, and how do you handle cache invalidation?
+
+### Further Reading
+
+- [AWS ECS Best Practices](https://docs.aws.amazon.com/AmazonECS/latest/bestpracticesguide/introduction.html) - Official guide on optimizing and deploying to Elastic Container Service
+- [Docker Build Cache](https://docs.docker.com/build/cache/) - Understanding how to leverage layer caching effectively
+- [pnpm vs npm vs yarn](https://pnpm.io/motivation) - Why efficient package management matters for build speeds
+- [The Cost of Unused Code](https://github.blog/2021-08-31-improving-large-monorepo-performance-on-github/#understanding-the-problem) - GitHub's perspective on managing codebase scale
