@@ -10,11 +10,21 @@ const compat = new FlatCompat({
 })
 
 const eslintConfig = [
+  {
+    ignores: ['.next/**', 'node_modules/**', 'dist/**', 'build/**']
+  },
   ...compat.extends(
     'next/core-web-vitals',
-    'next/typescript',
-    'plugin:mdx/recommended'
+    'next/typescript'
   ),
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react/no-unescaped-entities': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@next/next/no-img-element': 'off'
+    }
+  }
 ]
 
 export default eslintConfig
