@@ -8,7 +8,7 @@ import { BLOG_POSTS_SORTED, CURRENT_WORK, EMAIL, SOCIAL_LINKS } from './data'
 import { JsonLd, buildWebPageSchema, createMetadata } from '@/lib/seo'
 
 const HOME_DESCRIPTION =
-  'Portfolio of Paul Mothapo, a software engineer building software systems, AI tools, research experiments, and product ideas.'
+  'Portfolio of Paul Mothapo, an engineer building software systems, AI tools, research experiments, and product ideas.'
 
 export const metadata: Metadata = createMetadata({
   description: HOME_DESCRIPTION,
@@ -30,14 +30,13 @@ export default function Personal() {
           <div className="flex-1 text-zinc-800 dark:text-zinc-200">
             <ul className="mt-6 list-disc space-y-2 pl-5 text-zinc-600 dark:text-zinc-400">
               <li>
-                I enjoy <strong>building systems and tools</strong> that turn messy real-world
-                problems into structured software.
+                I enjoy <strong>technical foundations that companies run on, </strong> architecture, infrastructure, and the decisions that shape both.
               </li>
               <li>
-                Most of my work lives somewhere between <strong>data, design, AI, and product ideas.</strong>
+                Most of my work lives somewhere between <strong>distributed systems, design, AI, and product thinking.</strong>
               </li>
               <li>
-                I am especially interested in <strong>distributed systems, developer tools, and thoughtful product engineering.</strong>
+               I am drawn to hard problems where the engineering and the idea are equally difficult
               </li>
               <li>
                 One of my quieter interests is understanding <strong>how technology shapes human behavior.</strong>

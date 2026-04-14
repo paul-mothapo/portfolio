@@ -41,9 +41,9 @@ export function Header() {
             per="char"
             className="text-zinc-600 dark:text-zinc-500"
             delay={0.5}
-            aria-label="Software Engineer"
+            aria-label="Engineer"
           >
-            Software Engineer
+            Engineer
           </TextEffect>
         </div>
       </div>
