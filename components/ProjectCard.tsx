@@ -1,11 +1,9 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { MouseEvent } from 'react'
+import { motion, useMotionValue, useMotionTemplate } from 'motion/react'
 import Link from "next/link"
-import { Spotlight } from './ui/spotlight'
 import { ArrowRight } from 'lucide-react'
-
-
 
 export function ProjectCard({
   href,
@@ -18,17 +16,53 @@ export function ProjectCard({
   description: string
   ariaLabel: string
 }) {
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  function handleMouseMove({
+    currentTarget,
+    clientX,
+    clientY,
+  }: MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect()
+    mouseX.set(clientX - left)
+    mouseY.set(clientY - top)
+  }
+
   return (
-    <Link href={href} className="group block" aria-label={ariaLabel}>
-      <motion.article
+    <Link 
+      href={href} 
+      className="group relative block" 
+      aria-label={ariaLabel}
+      onMouseMove={handleMouseMove}
+    >
+      <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="relative flex h-full min-h-[8rem] w-full flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 text-left shadow-sm transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/50"
+        className="relative h-full w-full"
       >
-        <Spotlight
-          className="from-zinc-200 via-zinc-100 to-zinc-200 dark:from-zinc-800 dark:via-zinc-700 dark:to-zinc-800"
-          size={250}
-        />
+        <motion.div
+          className="pointer-events-none absolute -inset-[2px] z-0 overflow-hidden rounded-[18px] opacity-0 transition duration-300 group-hover:opacity-100"
+          style={{
+            maskImage: useMotionTemplate`
+              radial-gradient(
+                150px circle at ${mouseX}px ${mouseY}px,
+                black,
+                transparent 80%
+              )
+            `,
+            WebkitMaskImage: useMotionTemplate`
+              radial-gradient(
+                150px circle at ${mouseX}px ${mouseY}px,
+                black,
+                transparent 80%
+              )
+            `,
+          }}
+        >
+          <div className="absolute -inset-[100%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,#3b82f6,#a855f7,#ec4899,#f97316,#eab308,#14b8a6,#3b82f6)]" />
+        </motion.div>
+        <article className="relative z-10 flex h-full min-h-[8rem] w-full flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 text-left shadow-sm transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
         <div className="relative z-10 flex items-start justify-between">
           <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
             {title}
@@ -40,7 +74,8 @@ export function ProjectCard({
             {description}
           </p>
         </div>
-      </motion.article>
+        </article>
+      </motion.div>
     </Link>
   )
 }
