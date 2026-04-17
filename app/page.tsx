@@ -36,7 +36,7 @@ export default function Personal() {
                 Most of my work lives somewhere between <strong>distributed systems, design, AI, and product thinking.</strong>
               </li>
               <li>
-               I am drawn to hard problems where the engineering and the idea are equally difficult
+                I am drawn to hard problems where the engineering and the idea are equally difficult
               </li>
               <li>
                 One of my quieter interests is understanding <strong>how technology shapes human behavior.</strong>

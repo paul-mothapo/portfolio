@@ -1,0 +1,193 @@
+import { getBlogPostSeoInput } from '@/app/data'
+import { JsonLd, buildArticleSchema, createArticleMetadata } from '@/lib/seo'
+
+export const metadata = createArticleMetadata(
+  getBlogPostSeoInput('how-chunking-and-lazy-loading-cut-our-initial-bundle-by-one-megabyte')
+)
+
+<JsonLd data={buildArticleSchema(getBlogPostSeoInput('how-chunking-and-lazy-loading-cut-our-initial-bundle-by-one-megabyte'))} />
+<Cover
+  src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Abstract network of interconnected nodes representing optimized bundle architecture"
+  caption="When build boundaries mirror product boundaries, performance follows naturally."
+/>
+
+# How Chunking and Lazy Loading Cut Our Initial Bundle by One Megabyte
+
+Every frontend application has a weight problem it doesn't know about yet. Dependencies accumulate one `npm install` at a time, each addition individually reasonable, collectively punishing. This is the story of how I restructured our Vite build to align with the product's feature boundaries, lazy-loaded over a megabyte of on-demand libraries, and caught a silently broken CI pipeline along the way.
+
+I believe frontend performance is not primarily a technical problem. It is a product problem. When a recruiter opens the dashboard to check today's applications, they should not be downloading a PDF rendering engine. The question is never *can* we load everything at once. The question is *should* we.
+
+---
+
+## The Invisible Tax of a Flat Bundle
+
+Our application had become a large React SPA built with Vite, with modules for vacancy management, candidate tracking, a rich-text page builder, document viewing, and machine-assisted recommendations. It had grown to include over 30 dependencies, and the build config still treated all of it as a single unit.
+
+```typescript
+build: {
+  outDir: 'dist',
+  sourcemap: true,
+}
+```
+
+Three lines. No chunking strategy. No environment awareness. Sourcemaps shipped unconditionally, even to production. The bundler's default heuristics decided how to split code, and those heuristics had no knowledge of our product's feature boundaries.
+
+The consequences were not dramatic — they were insidious:
+
+- **A single code change invalidated the entire cache.** Updating a utility function forced users to re-download the entire application shell, including features they never used on that session.
+- **Heavy libraries loaded eagerly.** Large, user-triggered features were bundled into the initial page load even though they were only needed later.
+- **Bundle growth was invisible.** Without named chunks, the build output was a handful of opaque hash-named files. There was no way to attribute size to a feature or dependency.
+
+---
+
+## The Broken Safety Net
+
+While investigating the build, I discovered something worse: the CI pipeline was silently broken. The workflow defined a chain of jobs – security scan, lint, type-check, build – but the status checks never reflected the true state of the run.
+
+A mismatch between the workflow configuration and the lockfile format caused the install step to fail early. Because the first job failed before the rest of the chain could execute, later validation jobs were skipped and the repository appeared green despite the pipeline not actually completing.
+
+This is a type of failure I find particularly dangerous: the absence of a signal misinterpreted as a positive signal. The team believed CI was validating their code. It wasn't.
+
+---
+
+## Aligning Build Architecture with Product Architecture
+
+The fix was not to tune a single parameter. It was to establish a coherent performance strategy, one where the build system reflects how the product is actually used.
+
+### Environment-Gated Sourcemaps
+
+```typescript
+const isProduction = process.env.NODE_ENV === 'production';
+
+build: {
+  sourcemap: !isProduction,
+}
+```
+
+A small change with outsized impact. Sourcemaps remain available during development for debugging, but production artifacts are leaner and don't expose the internal source tree.
+
+### Manual Chunk Splitting
+
+I introduced a `manualChunks` function that partitions the bundle along two axes: vendor capabilities and product features.
+
+**Vendor chunks** are grouped by what they do:
+
+- `vendor-react` — React, ReactDOM, Zustand (core runtime, changes rarely)
+- `vendor-query` — TanStack React Query (data layer, independent release cycle)
+- `vendor-editor` — TipTap and ProseMirror (rich-text editing, large but isolated)
+- `vendor-charts` — Highcharts (reporting, only used on dashboard pages)
+- `vendor-pdf` — react-pdf (document viewing, only used in candidate detail)
+- `vendor-icons` — lucide-react, react-icons (tree-shaken icon sets)
+- `vendor-utils` — axios, date-fns, zod, clsx (small, stable utilities)
+
+**Route chunks** mirror the module structure:
+
+```
+route-feature-a, route-feature-b, route-feature-c,
+route-feature-d, route-feature-e, route-feature-f,
+route-feature-g, route-feature-h, route-feature-i,
+route-feature-j, route-public
+```
+
+This is not an arbitrary split. Each chunk maps to a feature the user navigates to. When a user opens one feature, they download only that route-specific chunk. When they never visit another feature, they never download its chunk. And when a single feature changes, only that route chunk is invalidated in the CDN cache, not the entire application.
+
+---
+
+## Loading Code at the Last Responsible Moment
+
+Some of the largest bundles were tied to features that users only accessed after an explicit action. These were ideal candidates for lazy loading because they were large, rarely used, and not needed at first glance.
+
+| Feature | Why it mattered | Trigger |
+|---------|-----------------|---------|
+| Document export | Large client-side bundle | User requests a document export |
+| File parsing | Heavy upload-time processing | User uploads a file |
+
+The static imports:
+
+```typescript
+import someExportLibrary from "some-export-library";
+import someParser from "some-parser";
+```
+
+became dynamic imports:
+
+```typescript
+const [{ default: exportLib }, { default: parser }] = await Promise.all([
+  import("some-export-library"),
+  import("some-parser"),
+]);
+```
+
+The same pattern was applied to other large, infrequently used features. The libraries are now fetched on demand, cached by the browser after first use, and invisible on the initial page load for the common product path.
+
+This is where I think the product framing matters most. Lazy loading is not a performance trick. It is a product decision. The question "when should this code load?" should be answered by "when does the user need it?", not by the arbitrary ordering of import statements at the top of a file.
+
+---
+
+## Making Performance Measurable
+
+Optimization without measurement is guessing. I added a `bundle-size` job to the CI pipeline that runs after every successful build:
+
+```yaml
+- name: Fail on oversized chunks
+  env:
+    MAX_CHUNK_BYTES: 563200  # 550 KB
+  run: |
+    for f in dist/assets/*.js dist/assets/*.css; do
+      size=$(stat --format=%s "$f")
+      if [ "$size" -gt "$MAX_CHUNK_BYTES" ]; then
+        echo "::error::Chunk $(basename $f) exceeds budget"
+        fail=1
+      fi
+    done
+```
+
+This creates a feedback loop with two important properties:
+
+1. **Zero latency** — The developer who introduces a heavy dependency is the developer who sees the failure, at the exact moment they can fix it.
+2. **Attribution** — Because chunks are named after features and libraries, the error message tells you *what* grew and *where* to look.
+
+The 550 KB threshold accommodates the heaviest lazy-loaded vendor libs that can't be split further. The threshold can be tightened as future refactoring moves more code behind dynamic imports.
+
+---
+
+## The Result
+
+The build output went from opaque blobs to a human-readable manifest:
+
+```
+vendor-react      163 KB   ← Core runtime (cached long-term)
+vendor-editor     358 KB   ← Rich-text (only career page builder)
+vendor-charts     290 KB   ← Charts (only reports)
+route-candidates  157 KB   ← Candidates feature module
+route-career-page 221 KB   ← Career page builder
+vendor-lazy       450 KB   ← Lazy-loaded export and file handling
+```
+
+**1.1 MB removed from the initial page load.** Not through compression or minification, through architecture. By asking "does this user need this code right now?" and answering honestly.
+
+The CI pipeline went from silently broken to fully operational: security scan, lint, type-check, build, and bundle-size enforcement, all visible as GitHub status checks on every push and pull request.
+
+---
+
+## In my closing
+
+Bundle performance is a systems problem. You cannot solve it at any single layer. The build config, the import graph, the CI pipeline, and the product's feature boundaries are all part of the same system. When they are aligned, performance is a natural consequence. When they are not, you pay a compounding tax that grows invisibly with every sprint.
+
+The most impactful changes were also the least glamorous: fixing a version number in a YAML file, converting `import` to `import()`, and adding a shell script that counts bytes. None of these required new dependencies, new frameworks, or architectural rewrites. They required looking at the system as a whole and asking where the misalignment was.
+
+For any team maintaining a growing SPA, I'd offer three principles:
+
+1. **Name your chunks.** If you can't see what's in your bundle, you can't manage it. Manual chunking creates visibility.
+2. **Load code when the user needs it, not when the bundler encounters it.** Every static import is an assertion that this code is needed on every page. Most assertions of that kind are wrong.
+3. **Measure in CI or don't measure at all.** Local profiling is useful for diagnosis, but only automated enforcement prevents regression.
+
+---
+
+### Further Reading
+
+- [Rollup Manual Chunks](https://rollupjs.org/configuration-options/#output-manualchunks) — How to define custom chunk boundaries in Vite/Rollup
+- [Dynamic Imports in JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) — MDN reference for lazy-loading modules
+- [Vite Build Options](https://vite.dev/config/build-options.html) — Complete reference for Vite's build configuration
+- [Web Performance Budget](https://web.dev/articles/performance-budgets-101) — Google's guide to setting and enforcing size budgets

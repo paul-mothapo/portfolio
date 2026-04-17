@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'How Chunking and Lazy Loading Cut Our Initial Bundle by One Megabyte',
+    description: 'How I restructured a Vite build with manual chunk splitting, dynamic imports for heavy vendor libraries, and a CI bundle-size gate, removing 1.1 MB from the initial page load.',
+    link: '/blog/p/how-chunking-and-lazy-loading-cut-our-initial-bundle-by-one-megabyte',
+    uid: 'blog-14',
+    image: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'Reducing Build Time by Six Minutes on AWS ECS',
     description: 'How I trimmed legacy drag, added caching, and used ECS build optimization to cut validation time from 16 minutes to 10.',
     link: '/blog/p/reducing-build-time-by-six-minutes-on-aws-ecs',
