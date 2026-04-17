@@ -84,13 +84,13 @@ I introduced a `manualChunks` function that partitions the bundle along two axes
 **Route chunks** mirror the module structure:
 
 ```
-route-feature-a, route-feature-b, route-feature-c,
-route-feature-d, route-feature-e, route-feature-f,
-route-feature-g, route-feature-h, route-feature-i,
-route-feature-j, route-public
+route-candidates, route-vacancies, route-archive,
+route-talent-pool, route-dashboard, route-reports,
+route-career-page, route-post-a-job, route-settings,
+route-auth, route-public
 ```
 
-This is not an arbitrary split. Each chunk maps to a feature the user navigates to. When a user opens one feature, they download only that route-specific chunk. When they never visit another feature, they never download its chunk. And when a single feature changes, only that route chunk is invalidated in the CDN cache, not the entire application.
+This is not an arbitrary split. Each chunk maps to a feature the user navigates to. When a recruiter opens the candidates page, they download `route-candidates`. When they never visit settings, they never download `route-settings`. And when we update the career page builder next week, only `route-career-page` is invalidated in the CDN cache, not the entire application.
 
 ---
 
@@ -157,13 +157,13 @@ The 550 KB threshold accommodates the heaviest lazy-loaded vendor libs that can'
 The build output went from opaque blobs to a human-readable manifest:
 
 ```
-vendor-react      163 KB   ← Core runtime (cached long-term)
-vendor-editor     358 KB   ← Rich-text (only career page builder)
-vendor-charts     290 KB   ← Charts (only reports)
-route-candidates  157 KB   ← Candidates feature module
-route-career-page 221 KB   ← Career page builder
-vendor-lazy       450 KB   ← Lazy-loaded export and file handling
+route-feature-a, route-feature-b, route-feature-c,
+route-feature-d, route-feature-e, route-feature-f,
+route-feature-g, route-feature-h, route-feature-i,
+route-feature-j, route-public
 ```
+
+This is not an arbitrary split. Each chunk maps to a feature the user navigates to. When a user opens one feature, they download only that route-specific chunk. When they never visit another feature, they never download its chunk. And when a single feature changes, only that route chunk is invalidated in the CDN cache, not the entire application.
 
 **1.1 MB removed from the initial page load.** Not through compression or minification, through architecture. By asking "does this user need this code right now?" and answering honestly.
 
