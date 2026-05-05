@@ -18,10 +18,8 @@ interface Message {
 }
 
 const MODELS = [
-  { id: 'stepfun/step-3.5-flash:free', name: 'Step 3.5 Flash' },
-  { id: 'arcee-ai/trinity-large-preview:free', name: 'Trinity Large' },
-  { id: 'nvidia/nemotron-nano-12b-v2-vl:free', name: 'Nemotron Nano' },
-  { id: 'z-ai/glm-4.5-air:free', name: 'GLM 4.5 Air' },
+  { id: 'deepseek-ai/DeepSeek-V4-Flash', name: 'DeepSeek V4 Flash' },
+  { id: 'moonshotai/Kimi-K2.5:together', name: 'Kimi K2.5' },
 ];
 
 const NICKNAMES = [

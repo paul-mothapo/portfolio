@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendChatMessage } from '@/lib/openrouter';
+import { sendChatMessage } from '@/lib/huggingface';
 
 export async function POST(req: Request) {
   try {
