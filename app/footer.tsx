@@ -1,4 +1,5 @@
 'use client'
+import { EMAIL } from '@/app/data'
 import { AnimatedBackground } from '@/components/ui/animated-background'
 import { TextLoop } from '@/components/ui/text-loop'
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
@@ -69,9 +70,9 @@ function ThemeSwitch() {
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-zinc-100 px-0 py-4 dark:border-zinc-800" role="contentinfo">
-      <div className="flex items-center justify-between">
-        <a 
-          href="https://github.com/paul-mothapo/portfolio" 
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <a
+          href="https://github.com/paul-mothapo/portfolio"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View portfolio source code on GitHub (opens in new tab)"
@@ -81,8 +82,17 @@ export function Footer() {
             <span>Built with Motion-Primitives.</span>
           </TextLoop>
         </a>
-        <div className="text-xs text-zinc-400" role="group" aria-label="Theme selection">
-          <ThemeSwitch />
+        <div className="flex items-center justify-between gap-4 sm:justify-end">
+          <a
+            href={`mailto:${EMAIL}`}
+            className="text-xs text-zinc-500 underline underline-offset-4 transition hover:text-zinc-700 dark:hover:text-zinc-300"
+            aria-label={`Send email to ${EMAIL}`}
+          >
+            {EMAIL}
+          </a>
+          <div className="text-xs text-zinc-400" role="group" aria-label="Theme selection">
+            <ThemeSwitch />
+          </div>
         </div>
       </div>
     </footer>

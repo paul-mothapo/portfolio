@@ -1,5 +1,6 @@
 'use client'
 import { TextEffect } from '@/components/ui/text-effect'
+import { EMAIL } from '@/app/data'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
@@ -152,7 +153,14 @@ export function Header() {
               </nav>
 
               <div className="mt-8 text-sm text-zinc-400">
-                Press the close button to return to where you were.
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="text-zinc-300 underline underline-offset-4 transition hover:text-white"
+                  aria-label={`Send email to ${EMAIL}`}
+                >
+                  {EMAIL}
+                </a>
+                <p className="mt-3">Press the close button to return to where you were.</p>
               </div>
             </div>
           </div>
