@@ -206,8 +206,8 @@ ${fs.existsSync(contextPath) ? `CONTEXT:\n${fs.readFileSync(contextPath, 'utf8')
     const errorData = await response.json().catch(() => ({}));
     throw new Error(
       errorData.error?.message ||
-        errorData.message ||
-        `Hugging Face API error: ${response.statusText}`
+      errorData.message ||
+      `Hugging Face API error: ${response.statusText}`
     );
   }
 

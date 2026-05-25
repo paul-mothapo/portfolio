@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Redactor — AI Powered Image Shield</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <div class="brand">
+      <h1>AI Image Redactor</h1>
+      <p>Cleanse sensitive data with machine vision</p>
+    </div>
+    <div id="statusGroup" style="display: none;">
+      <button id="clearBtn" class="danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        Clear All
+      </button>
+    </div>
+  </header>
+
+  <div class="main-card">
+    <div id="uploadZone" class="upload-zone">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <p style="font-weight: 500;">Drop an image here or click to upload</p>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">JPG, PNG up to 10MB</p>
+      <input type="file" id="fileInput" accept="image/*" />
+    </div>
+
+    <div id="editorArea" style="display: none;">
+      <div class="canvas-container">
+        <canvas id="imgCanvas"></canvas>
+        <canvas id="drawCanvas"></canvas>
+      </div>
+
+      <div class="toolbar">
+        <span class="info-text">Draw masks to redact</span>
+        <div style="flex-grow: 1;"></div>
+        <button id="scanBtn">
+          <span id="scanIcon">🔍</span>
+          <span id="scanText">Auto-Scan</span>
+        </button>
+        <button id="undoBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+          Undo
+        </button>
+        <select id="redactStyle">
+          <option value="blur">Blur Effect</option>
+          <option value="black">Solid Black</option>
+          <option value="pixelate">Pixelate</option>
+        </select>
+        <button id="redactBtn" class="primary">
+          <span id="btnIcon">🛡</span>
+          <span id="btnText">Redact with AI</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="aiPanel">
+    <h3>Intelligence Analysis</h3>
+    <p id="aiText"></p>
+    <div id="suggestionChips"></div>
+  </div>
+
+  <div id="outputWrap">
+    <div class="output-header">
+      <h2>Redacted Result</h2>
+      <button id="downloadBtn" class="primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Shielded Image
+      </button>
+    </div>
+    <canvas id="outputCanvas"></canvas>
+  </div>
+</div>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const uploadZone = document.getElementById('uploadZone');
+const editorArea = document.getElementById('editorArea');
+const imgCanvas = document.getElementById('imgCanvas');
+const drawCanvas = document.getElementById('drawCanvas');
+const statusGroup = document.getElementById('statusGroup');
+const clearBtn = document.getElementById('clearBtn');
+const undoBtn = document.getElementById('undoBtn');
+const redactBtn = document.getElementById('redactBtn');
+const scanBtn = document.getElementById('scanBtn');
+const redactStyle = document.getElementById('redactStyle');
+const aiPanel = document.getElementById('aiPanel');
+const aiText = document.getElementById('aiText');
+const suggestionChips = document.getElementById('suggestionChips');
+const outputWrap = document.getElementById('outputWrap');
+const outputCanvas = document.getElementById('outputCanvas');
+const downloadBtn = document.getElementById('downloadBtn');
+
+const imgCtx = imgCanvas.getContext('2d');
+const drawCtx = drawCanvas.getContext('2d');
+
+let img = null;
+let rects = [];
+let ghostRects = [];
+let drawing = false;
+let startX = 0, startY = 0;
+let currentRect = null;
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function normalizeDetectionRect(result) {
+  let x = Number(result.x ?? result.left ?? result.x1);
+  let y = Number(result.y ?? result.top ?? result.y1);
+  let w = Number(result.w ?? result.width);
+  let h = Number(result.h ?? result.height);
+
+  if (Array.isArray(result.bbox_2d) && result.bbox_2d.length >= 4) {
+    const [x1, y1, x2, y2] = result.bbox_2d.map(Number);
+    x = x1;
+    y = y1;
+    w = x2 - x1;
+    h = y2 - y1;
+  } else if (Number.isFinite(Number(result.x2)) && Number.isFinite(Number(result.y2))) {
+    w = Number(result.x2) - x;
+    h = Number(result.y2) - y;
+  }
+
+  if (![x, y, w, h].every(Number.isFinite) || w <= 0 || h <= 0) {
+    return null;
+  }
+
+  const maxCoord = Math.max(x, y, x + w, y + h);
+  const fitsCanvas = maxCoord <= Math.max(imgCanvas.width, imgCanvas.height) * 1.05;
+  const usesNormalizedScale = !fitsCanvas && maxCoord <= 1000;
+  const scaleX = fitsCanvas ? 1 : usesNormalizedScale ? imgCanvas.width / 1000 : imgCanvas.width / img.naturalWidth;
+  const scaleY = fitsCanvas ? 1 : usesNormalizedScale ? imgCanvas.height / 1000 : imgCanvas.height / img.naturalHeight;
+
+  const rect = {
+    x: x * scaleX,
+    y: y * scaleY,
+    w: w * scaleX,
+    h: h * scaleY
+  };
+
+  const x1 = clamp(rect.x, 0, imgCanvas.width);
+  const y1 = clamp(rect.y, 0, imgCanvas.height);
+  const x2 = clamp(rect.x + rect.w, 0, imgCanvas.width);
+  const y2 = clamp(rect.y + rect.h, 0, imgCanvas.height);
+
+  return {
+    x: x1,
+    y: y1,
+    w: x2 - x1,
+    h: y2 - y1
+  };
+}
+
+uploadZone.addEventListener('click', () => fileInput.click());
+
+function scaleCoord(e) {
+  const rect = drawCanvas.getBoundingClientRect();
+  const scaleX = drawCanvas.width / rect.width;
+  const scaleY = drawCanvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const image = new Image();
+    image.onload = () => {
+      img = image;
+      const containerW = document.querySelector('.main-card').clientWidth - 48;
+      const scale = Math.min(1, containerW / image.width, 800 / image.height);
+      const W = Math.round(image.width * scale);
+      const H = Math.round(image.height * scale);
+      
+      imgCanvas.width = drawCanvas.width = W;
+      imgCanvas.height = drawCanvas.height = H;
+      imgCanvas.style.width = drawCanvas.style.width = W + 'px';
+      imgCanvas.style.height = drawCanvas.style.height = H + 'px';
+      
+      imgCtx.drawImage(image, 0, 0, W, H);
+      uploadZone.style.display = 'none';
+      editorArea.style.display = 'block';
+      statusGroup.style.display = 'block';
+      rects = [];
+      ghostRects = [];
+      redrawDraw();
+      aiPanel.style.display = 'none';
+      outputWrap.style.display = 'none';
+    };
+    image.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+drawCanvas.addEventListener('mousedown', startDraw);
+drawCanvas.addEventListener('mousemove', moveDraw);
+drawCanvas.addEventListener('mouseup', endDraw);
+drawCanvas.addEventListener('click', handleCanvasClick);
+
+function startDraw(e) {
+  if (!img) return;
+  drawing = true;
+  const p = scaleCoord(e);
+  startX = p.x; startY = p.y;
+  currentRect = null;
+}
+
+function moveDraw(e) {
+  if (!drawing) return;
+  const p = scaleCoord(e);
+  currentRect = {
+    x: Math.min(startX, p.x), y: Math.min(startY, p.y),
+    w: Math.abs(p.x - startX), h: Math.abs(p.y - startY)
+  };
+  redrawDraw();
+}
+
+function endDraw(e) {
+  if (!drawing) return;
+  drawing = false;
+  if (currentRect && currentRect.w > 5 && currentRect.h > 5) {
+    rects.push({ ...currentRect });
+  }
+  currentRect = null;
+  redrawDraw();
+}
+
+function handleCanvasClick(e) {
+  if (drawing) return;
+  const p = scaleCoord(e);
+  
+  // Check if click is on a ghost rect
+  const hitIndex = ghostRects.findIndex(r => 
+    p.x >= r.x && p.x <= r.x + r.w &&
+    p.y >= r.y && p.y <= r.y + r.h
+  );
+
+  if (hitIndex !== -1) {
+    // Move from ghost to confirmed
+    rects.push(ghostRects[hitIndex]);
+    ghostRects.splice(hitIndex, 1);
+    redrawDraw();
+  }
+}
+
+function redrawDraw() {
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  
+  // Draw ghost rects (AI suggestions)
+  ghostRects.forEach(r => {
+    drawCtx.fillStyle = 'rgba(168, 85, 247, 0.1)';
+    drawCtx.fillRect(r.x, r.y, r.w, r.h);
+    drawCtx.strokeStyle = 'rgba(168, 85, 247, 0.5)';
+    drawCtx.setLineDash([2, 4]);
+    drawCtx.lineWidth = 1;
+    drawCtx.strokeRect(r.x, r.y, r.w, r.h);
+    
+    // Hint text
+    drawCtx.setLineDash([]);
+    drawCtx.fillStyle = '#a855f7';
+    drawCtx.font = '10px Inter, sans-serif';
+    drawCtx.fillText('Click to redact', r.x, r.y - 4);
+  });
+
+  const allRects = currentRect ? [...rects, currentRect] : rects;
+  allRects.forEach((r, i) => {
+    drawCtx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+    drawCtx.fillRect(r.x, r.y, r.w, r.h);
+    drawCtx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
+    drawCtx.setLineDash([4, 4]);
+    drawCtx.lineWidth = 1.5;
+    drawCtx.strokeRect(r.x, r.y, r.w, r.h);
+    
+    if (i < rects.length) {
+      drawCtx.setLineDash([]);
+      drawCtx.fillStyle = '#3b82f6';
+      drawCtx.beginPath();
+      drawCtx.rect(r.x, r.y, 20, 20);
+      drawCtx.fill();
+      drawCtx.fillStyle = '#fff';
+      drawCtx.font = 'bold 11px Inter, sans-serif';
+      drawCtx.textAlign = 'center';
+      drawCtx.fillText(i + 1, r.x + 10, r.y + 14);
+    }
+  });
+}
+
+undoBtn.addEventListener('click', () => {
+  rects.pop();
+  redrawDraw();
+});
+
+clearBtn.addEventListener('click', () => {
+  img = null; rects = []; ghostRects = [];
+  uploadZone.style.display = 'block';
+  editorArea.style.display = 'none';
+  statusGroup.style.display = 'none';
+  aiPanel.style.display = 'none';
+  outputWrap.style.display = 'none';
+  fileInput.value = '';
+});
+
+scanBtn.addEventListener('click', async () => {
+  if (!img) return;
+  
+  scanBtn.disabled = true;
+  const icon = document.getElementById('scanIcon');
+  if (icon) icon.innerHTML = '<div class="loader"></div>';
+  document.getElementById('scanText').textContent = 'Scanning...';
+
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = imgCanvas.width;
+  tempCanvas.height = imgCanvas.height;
+  tempCanvas.getContext('2d').drawImage(imgCanvas, 0, 0);
+  const base64 = tempCanvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+
+  const prompt = `[OBJECT_DETECTION]
+  TASK: Find all human faces and PII.
+  FORMAT: Return ONLY a JSON array of objects: [{"x": int, "y": int, "w": int, "h": int}].
+  COORDINATES: Use pixel coordinates in the provided ${imgCanvas.width}x${imgCanvas.height} image. x/y are the top-left corner. w/h are width and height.
+  No text. No markdown. Only the JSON array.`;
+
+  try {
+    const response = await fetch('/api/redact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, base64 })
+    });
+
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || '[]';
+    
+    // Extract JSON from potential markdown/text wrap
+    const jsonMatch = reply.match(/\[\s*{[\s\S]*}\s*\]/);
+    const results = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+    
+    ghostRects = results
+      .map(normalizeDetectionRect)
+      .filter(r => r && r.w > 5 && r.h > 5);
+    
+    redrawDraw();
+    
+    if (ghostRects.length > 0) {
+      aiPanel.style.display = 'block';
+      aiText.textContent = `I've detected ${ghostRects.length} sensitive areas. Click them on the image to confirm redaction.`;
+    } else {
+      aiPanel.style.display = 'block';
+      aiText.textContent = "No sensitive areas were automatically detected. You can still mark them manually.";
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert('AI Scanning failed. Please try manual redaction.');
+  } finally {
+    scanBtn.disabled = false;
+    const scanIcon = document.getElementById('scanIcon');
+    if (scanIcon) scanIcon.textContent = '🔍';
+    document.getElementById('scanText').textContent = 'Auto-Scan';
+  }
+});
+
+redactBtn.addEventListener('click', async () => {
+  if (!img || rects.length === 0) {
+    alert('Please draw at least one area to redact.');
+    return;
+  }
+
+  redactBtn.disabled = true;
+  const icon = document.getElementById('btnIcon');
+  if (icon) icon.innerHTML = '<div class="loader"></div>';
+  document.getElementById('btnText').textContent = 'Analyzing...';
+  
+  aiPanel.style.display = 'block';
+  aiText.textContent = 'Synchronizing with machine vision models...';
+  suggestionChips.innerHTML = '';
+
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = imgCanvas.width;
+  tempCanvas.height = imgCanvas.height;
+  tempCanvas.getContext('2d').drawImage(imgCanvas, 0, 0);
+  const base64 = tempCanvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+
+  const regionDescriptions = rects.map((r, i) =>
+    `Region ${i + 1}: x=${Math.round(r.x)}, y=${Math.round(r.y)}, width=${Math.round(r.w)}, height=${Math.round(r.h)}`
+  ).join('\n');
+
+  const prompt = `Image analysis request. Regions marked:\n${regionDescriptions}\n\n1. Describe sensitive content in these areas (under 3 sentences). 2. SUGGESTIONS: list 2-3 other sensitive areas.`;
+
+  try {
+    const response = await fetch('/api/redact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, base64 })
+    });
+
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || '';
+    const parts = reply.split('SUGGESTIONS:');
+    aiText.textContent = parts[0].trim();
+
+    if (parts[1]) {
+      parts[1].trim().split('\n')
+        .filter(l => l.includes('-'))
+        .map(l => l.replace(/^[-\s0-9.]+/, '').trim())
+        .forEach(chip => {
+          if(!chip) return;
+          const span = document.createElement('span');
+          span.className = 'chip';
+          span.textContent = chip;
+          suggestionChips.appendChild(span);
+        });
+    }
+  } catch (err) {
+    aiText.textContent = 'Intelligence layer currently offline. Proceeding with local redaction patterns.';
+  }
+
+  applyRedaction();
+  redactBtn.disabled = false;
+  const redactIcon = document.getElementById('btnIcon');
+  if (redactIcon) redactIcon.textContent = '🛡';
+  document.getElementById('btnText').textContent = 'Redact with AI';
+});
+
+function applyRedaction() {
+  const style = redactStyle.value;
+  const W = imgCanvas.width, H = imgCanvas.height;
+  outputCanvas.width = W;
+  outputCanvas.height = H;
+  const outCtx = outputCanvas.getContext('2d');
+  outCtx.drawImage(imgCanvas, 0, 0);
+
+  rects.forEach(r => {
+    const rx = Math.round(r.x), ry = Math.round(r.y);
+    const rw = Math.round(r.w), rh = Math.round(r.h);
+
+    if (style === 'black') {
+      outCtx.fillStyle = '#000';
+      outCtx.fillRect(rx, ry, rw, rh);
+    } else if (style === 'blur') {
+      const tmp = document.createElement('canvas');
+      tmp.width = rw; tmp.height = rh;
+      const tCtx = tmp.getContext('2d');
+      tCtx.filter = 'blur(16px)';
+      tCtx.drawImage(outputCanvas, rx, ry, rw, rh, 0, 0, rw, rh);
+      outCtx.drawImage(tmp, rx, ry, rw, rh);
+    } else if (style === 'pixelate') {
+      const pxSize = Math.max(12, Math.floor(Math.min(rw, rh) / 10));
+      for (let py = ry; py < ry + rh; py += pxSize) {
+        for (let px = rx; px < rx + rw; px += pxSize) {
+          const sw = Math.min(pxSize, rx + rw - px);
+          const sh = Math.min(pxSize, ry + rh - py);
+          const d = outCtx.getImageData(px, py, 1, 1).data;
+          outCtx.fillStyle = `rgb(${d[0]},${d[1]},${d[2]})`;
+          outCtx.fillRect(px, py, sw, sh);
+        }
+      }
+    }
+  });
+
+  outputWrap.style.display = 'block';
+  setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+}
+
+downloadBtn.addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.download = `redacted-${Date.now()}.png`;
+  link.href = outputCanvas.toDataURL('image/png');
+  link.click();
+});
+</script>
+</body>
+</html>
