@@ -28,7 +28,6 @@ app.post('/api/redact', async (req, res) => {
     const model = 'Qwen/Qwen2.5-VL-72B-Instruct';
     const endpoint = 'https://router.huggingface.co/v1/chat/completions';
 
-    console.log(`Sending request to HF Router for model: ${model}`);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000); // 60s for vision tasks
 
@@ -61,8 +60,7 @@ app.post('/api/redact', async (req, res) => {
     }
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || '';
-    console.log('AI Response received. Snippet:', reply.substring(0, 200));
+    data.choices?.[0]?.message?.content || '';
     res.json(data);
   } catch (error) {
     if (error.name === 'AbortError') {
