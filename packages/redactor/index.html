@@ -269,7 +269,7 @@
     }
 
     function parseDetectionResults(reply) {
-      const jsonMatch = reply.match(/\[\s*{[\s\S]*}\s*\]/);
+      const jsonMatch = reply.match(/\[[\s\S]*\]/);
       if (!jsonMatch) {
         console.error('No JSON found in scan reply:', reply);
         throw new Error("The scan didn't return valid data. Check the console for the full message.");
@@ -277,7 +277,11 @@
 
       const jsonText = jsonMatch[0];
       try {
-        return JSON.parse(jsonText);
+        const parsed = JSON.parse(jsonText);
+        if (!Array.isArray(parsed)) {
+          throw new Error("Scan data was not an array.");
+        }
+        return parsed;
       } catch (parseErr) {
         console.warn('Recovering malformed detection data:', jsonText);
       }
