@@ -90,6 +90,7 @@
 
             <select id="redactStyle">
               <option value="black">Black cover</option>
+              <option value="blur">Blur</option>
               <option value="white">White cover</option>
             </select>
 
@@ -189,6 +190,8 @@
     let hasRedactionResult = false;
     let keyboardRect = null;
     let scanBoxTimer = null;
+    let scanSourceWidth = 0;
+    let scanSourceHeight = 0;
 
     function clamp(value, min, max) {
       return Math.min(max, Math.max(min, value));
@@ -409,10 +412,11 @@
         const confidence = confidenceValue === null
           ? ' review'
           : ` ${Math.round(clamp(confidenceValue, 0, 100))}%`;
+        const label = rect.label ? rect.label : `Detection ${index + 1}`;
         const row = document.createElement('div');
         row.className = 'detection-row';
         row.innerHTML = `
-      <span>Detection ${index + 1}<small>${confidence}</small></span>
+      <span>${label}<small>${confidence}</small></span>
       <button type="button" class="mini-btn" data-action="confirm" data-index="${index}">Confirm</button>
       <button type="button" class="mini-btn" data-action="reject" data-index="${index}">Reject</button>
     `;
@@ -435,6 +439,17 @@
       hoverIndex = clamp(Math.min(index, ghostRects.length - 1), -1, ghostRects.length - 1);
       updateDetectionControls();
       redrawDraw();
+    }
+
+    function normalizeScanResults(results) {
+      return results
+        .map(normalizeDetectionRect)
+        .filter(r => r && r.w > 5 && r.h > 5)
+        .sort((a, b) => {
+          const aConfidence = Number.isFinite(a.confidence) ? a.confidence : -1;
+          const bConfidence = Number.isFinite(b.confidence) ? b.confidence : -1;
+          return bConfidence - aConfidence;
+        });
     }
 
     function ensureKeyboardRect() {
@@ -512,6 +527,8 @@
           imageHistory = [];
           hasRedactionResult = false;
           keyboardRect = null;
+          scanSourceWidth = 0;
+          scanSourceHeight = 0;
           hoverIndex = -1;
           updateDownloadState();
           updateDetectionControls();
@@ -768,6 +785,7 @@
       const prompt = `[OBJECT_DETECTION]
   TASK: Detect every area that should be redacted from an identification document.
   INCLUDE: primary face, secondary/ghost portrait, full name, document or ID numbers, address, date of birth, signature, license/card number, issue dates, expiry dates, barcodes, QR codes, and any machine-readable personal identifiers.
+  EXCLUDE: decorative artwork, state names, card titles, field labels, seals, icons, sample watermarks, and non-personal static text such as "IDENTIFICATION CARD", "NORTH CAROLINA", "Sex", "Eyes", "Hair", "Height", "Race", "ISS", or "EXP" unless the adjacent personal value is inside the same box.
   GROUPING: Return one bounding box per visible sensitive region. For text lines, group the whole sensitive line or field, not individual letters.
   FORMAT: Return ONLY a JSON array of objects: [{"box_2d":[ymin,xmin,ymax,xmax],"label":"short label","confidence":0.0}].
   COORDINATES: Normalize every box to a 0-1000 coordinate space relative to the provided scan image.
@@ -790,7 +808,7 @@
 
         const results = parseDetectionResults(reply);
 
-        ghostRects = results.map(normalizeDetectionRect).filter(r => r && r.w > 5 && r.h > 5);
+        ghostRects = normalizeScanResults(results);
         redrawDraw();
 
         updateDetectionControls();
@@ -834,6 +852,28 @@
         if (style === 'black') {
           outCtx.fillStyle = '#000';
           outCtx.fillRect(rx, ry, rw, rh);
+        } else if (style === 'blur') {
+          const sampleW = Math.max(1, Math.ceil(rw / 36));
+          const sampleH = Math.max(1, Math.ceil(rh / 36));
+          const tiny = document.createElement('canvas');
+          tiny.width = sampleW;
+          tiny.height = sampleH;
+          const tinyCtx = tiny.getContext('2d');
+          tinyCtx.imageSmoothingEnabled = false;
+          tinyCtx.drawImage(outputCanvas, rx, ry, rw, rh, 0, 0, sampleW, sampleH);
+
+          const hardened = document.createElement('canvas');
+          hardened.width = rw;
+          hardened.height = rh;
+          const hardCtx = hardened.getContext('2d');
+          hardCtx.imageSmoothingEnabled = false;
+          hardCtx.drawImage(tiny, 0, 0, sampleW, sampleH, 0, 0, rw, rh);
+          hardCtx.filter = 'blur(28px) contrast(0.35) brightness(0.9)';
+          hardCtx.drawImage(hardened, 0, 0);
+          hardCtx.filter = 'none';
+          hardCtx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+          hardCtx.fillRect(0, 0, rw, rh);
+          outCtx.drawImage(hardened, rx, ry, rw, rh);
         } else if (style === 'white') {
           outCtx.fillStyle = '#fff';
           outCtx.fillRect(rx, ry, rw, rh);
