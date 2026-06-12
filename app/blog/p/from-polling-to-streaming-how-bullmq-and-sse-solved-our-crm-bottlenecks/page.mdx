@@ -1,0 +1,211 @@
+import { getBlogPostSeoInput } from '@/app/data'
+import { JsonLd, buildArticleSchema, createArticleMetadata } from '@/lib/seo'
+
+export const metadata = createArticleMetadata(
+  getBlogPostSeoInput('from-polling-to-streaming-how-bullmq-and-sse-solved-our-crm-bottlenecks')
+)
+
+<JsonLd data={buildArticleSchema(getBlogPostSeoInput('from-polling-to-streaming-how-bullmq-and-sse-solved-our-crm-bottlenecks'))} />
+<Cover
+  src="https://images.unsplash.com/photo-1698892289193-eb8b082ecce3?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="Abstract light waves representing real-time data flow and low-latency messages"
+  caption="In real-time systems, efficiency and user experience are the exact same thing."
+/>
+
+# From Polling to Streaming: How BullMQ and SSE Solved Our CRM Bottlenecks
+
+Every software architecture eventually hits the limits of its initial simplicity. When we first built the follow-up task system in our CRM, we took the path of least resistance: a database table for tasks, a cron scheduler polling the DB, and a frontend that polled for notifications every minute. 
+
+It worked for ten users. It struggled for a thousand. 
+
+This is the story of how we replaced a resource-intensive database-polling scheduler and frequent client-side HTTP polling with a combination of **BullMQ delayed queues** and **Server-Sent Events (SSE) streaming** in NestJS, reducing our notification latency from minutes to milliseconds and freeing our database from infinite queries.
+
+---
+
+## The Legacy Bottleneck: A Tale of Two Polls
+
+In our initial design, reminder notifications suffered from a compounding latency problem. The system had two disconnects:
+
+1. **The Backend Polling Scheduler**: A background scheduler queried the database every minute looking for tasks that had transitioned past their `dueAt` date. If a task was due at `10:00:01`, and the scheduler had just run at `10:00:00`, the scheduler wouldn't pick it up until `10:01:00`.
+2. **The Frontend Polling Client**: Once the scheduler triggered the task and wrote a notification to the database, the frontend didn't know about it. The frontend was configured to fetch `GET /v1/notifications` every 60 seconds.
+
+```
+Task Due (10:00:01) 
+     │
+     ▼ (Up to 60s delay)
+Backend Scheduler fires & writes to DB (10:01:00)
+     │
+     ▼ (Up to 60s delay)
+Frontend Polls & receives alert (10:02:00)
+```
+
+In the worst-case scenario, a recruiter would receive an alert **two minutes** after the task was actually due. In a fast-paced recruitment environment where follow-ups are time-sensitive, two minutes is an eternity. 
+
+Worse, the scaling economics were terrible. If 500 recruiters had the tab open, the frontend was hitting our notifications API 500 times a minute. Our database logs were filled with repetitive queries looking for notifications that hadn't changed, while the backend database CPU was locked into constant table scans for due tasks.
+
+---
+
+## Precision Scheduling with BullMQ
+
+We realized we needed to move from a poll-based model to a push-based model. The scheduling of reminders shouldn't rely on checking "is anything due yet?" every minute. Instead, the creation or update of a task should register a point-in-time trigger.
+
+We introduced **BullMQ** (backed by Redis) to manage this scheduling. BullMQ supports **delayed jobs**, allowing us to enqueue a job that is guaranteed to execute at a precise millisecond timestamp in the future.
+
+### Registering and Updating Jobs
+
+When a task is created or its due date is updated, we compute the target delay: `dueAt - now`. We then schedule a delayed job in the `crm-tasks` queue:
+
+```typescript
+// crm.task-queue.service.ts
+async scheduleTask(task: CrmTask): Promise<void> {
+  const delay = task.dueAt ? Math.max(0, task.dueAt.getTime() - Date.now()) : 0;
+  
+  await this.crmTaskQueue.add(
+    'execute-task',
+    { taskId: task.taskId, organizationId: Number(task.organizationId) },
+    {
+      jobId: task.taskId, // Use taskId as jobId for easy updates/cancellations
+      delay,
+      removeOnComplete: true,
+      removeOnFail: false,
+    },
+  );
+}
+```
+
+Using the `taskId` as the `jobId` is key. If a user deletes a task, completes it early, or reschedules it, we don't have to keep invalid state in Redis. We can interact with the job in the queue directly:
+
+```typescript
+// Cancel a scheduled job if a task is marked DONE or deleted
+async cancelTask(taskId: string): Promise<void> {
+  const job = await this.crmTaskQueue.getJob(taskId);
+  if (job) {
+    await job.remove();
+  }
+}
+```
+
+### Self-Healing on Boot
+
+Because Redis is an in-memory store and workers can restart, we built a self-healing reconciliation process. On application startup, the `onApplicationBootstrap` hook queries the database for all open, untriggered tasks and re-synchronizes the BullMQ queue:
+
+```typescript
+async onApplicationBootstrap(): Promise<void> {
+  const tasks = await this.crmTaskDao.findOpenTasksToSchedule();
+  for (const task of tasks) {
+    await this.scheduleTask(task);
+  }
+}
+```
+
+When the delayed job matures, the `CrmTaskProcessor` picks it up, enforces tenant isolation by looking up the task with both `taskId` and `organizationId`, and invokes the `CrmTaskTriggerService` to write the notification.
+
+---
+
+## Moving to Real-Time Streaming with NestJS SSE
+
+Solving backend scheduling was only half the battle. If a task triggered at exactly `10:00:00.005`, the notification was written to the database instantly, but the frontend would still wait up to a minute to poll for it.
+
+We needed a way to stream the notification to the browser the instant it was written. Instead of WebSockets—which require complex connection state handling and bi-directional framing—we chose **Server-Sent Events (SSE)**. SSE is a lightweight, unidirectional protocol built over HTTP that allows the server to push events to the browser.
+
+### The Reactive Event pipeline
+
+We wired our database layer to emit application-wide events when writes occur. When the `UserNotificationDao` creates a new notification record, it emits a NestJS event using `EventEmitter2`:
+
+```typescript
+// user.notification.dao.ts
+async createIdempotent(input: CreateUserNotificationInput): Promise<UserNotification> {
+  // ... check for duplicates ...
+  const saved = await this.repo.save(notification);
+  
+  this.eventEmitter.emit('notification.created', saved);
+  return saved;
+}
+```
+
+In the NestJS controller, we exposed an SSE endpoint:
+
+```typescript
+// user.notification.controller.ts
+@Get('notifications/stream')
+@Sse('notifications/stream')
+@Version('1')
+@ApiOperation({ summary: 'Stream live notifications for the current user' })
+async streamNotifications(
+  @Query() query: UserNotificationQueryDto,
+): Promise<Observable<MessageEvent>> {
+  const context = await this.userNotificationService.resolveContext(query.organizationId);
+  return this.userNotificationService.subscribeToNotifications(
+    context.userId,
+    context.organizationId,
+  );
+}
+```
+
+The service uses RxJS to listen to the event emitter, filter events for the specific user and tenant context, and map them to SSE payload structures. We also merge in a 30-second heartbeat interval to prevent proxies and firewalls from killing the idle connection:
+
+```typescript
+// user.notification.service.ts
+subscribeToNotifications(userId: number, organizationId: number): Observable<MessageEvent> {
+  // Listen for newly created notifications and filter for the user
+  const notification$ = fromEvent(this.eventEmitter, 'notification.created').pipe(
+    filter((notification: UserNotification) => {
+      return (
+        notification.userSn === userId &&
+        notification.organizationId === organizationId
+      );
+    }),
+    map((notification: UserNotification) => {
+      return {
+        data: new UserNotificationResponseDto(notification),
+      } as MessageEvent;
+    }),
+  );
+
+  // Send a heartbeat event every 30 seconds to keep the connection alive
+  const heartbeat$ = interval(30000).pipe(
+    map(() => ({ data: { type: 'heartbeat' } } as MessageEvent)),
+  );
+
+  return merge(notification$, heartbeat$);
+}
+```
+
+---
+
+## Latency and Resource Comparison
+
+By pairing BullMQ's delayed processing with NestJS SSE streaming, we completely redesigned the data flow. The performance difference was night and day:
+
+### Key Performance Metrics Compared
+
+* **Notification Latency**:
+  * *Legacy*: Up to 120 seconds
+  * *Modern*: **~50 - 150 milliseconds**
+* **Database Queries**:
+  * *Legacy*: 500+ read queries/minute per 500 users
+  * *Modern*: **0 polling queries** (write-only on trigger)
+* **Server Overhead**:
+  * *Legacy*: High database CPU, constant lock contention
+  * *Modern*: Minimal CPU, steady HTTP connection state
+* **User Experience**:
+  * *Legacy*: Delayed alerts, felt laggy
+  * *Modern*: Instant alerts, real-time feedback
+
+---
+
+## Architectural Takeaways
+
+If you are planning out notifications or scheduler systems in a high-concurrency CRM, here are three principles we learned:
+
+1. **Avoid DB polling schedulers at all costs.** Querying a database looking for rows due in the past creates massive lock contention and is highly inefficient. Offload this timing logic to a specialized engine like Redis.
+2. **SSE is a hidden gem for notifications.** WebSockets are fantastic for chat apps and multi-player editing, but they come with a high cost of connection maintenance and reconnection logic. If you only need server-to-client push, SSE is cleaner, runs over standard HTTP, and has native browser support (`EventSource`).
+3. **Align application events with database writes.** Emitting an event at the exact point of commit ensures your streaming layers remain clean. They don't need to know *why* the notification was created, only that a new record exists and needs to be pushed.
+
+---
+
+### Further Reading
+
+- [BullMQ Delayed Jobs](https://docs.bullmq.io/guide/jobs/delayed) — Official guide on setting up and managing delayed queues in Redis.
+- [NestJS SSE Docs](https://docs.nestjs.com/techniques/server-sent-events) — How to configure Server-Sent Events in NestJS controllers.
+- [Using Server-Sent Events (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) — Frontend implementation details for the browser `EventSource` API.

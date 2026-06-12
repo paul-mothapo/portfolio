@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'From Polling to Streaming: How BullMQ and SSE Solved Our CRM Bottlenecks',
+    description: 'How we replaced a resource-intensive database polling scheduler and frequent client-side polling with BullMQ delayed queues and real-time Server-Sent Events (SSE), reducing notification latency from minutes to milliseconds.',
+    link: '/blog/p/from-polling-to-streaming-how-bullmq-and-sse-solved-our-crm-bottlenecks',
+    uid: 'blog-15',
+    image: 'https://images.unsplash.com/photo-1698892289193-eb8b082ecce3?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'How Chunking and Lazy Loading Cut Our Initial Bundle by One Megabyte',
     description: 'How I restructured a Vite build with manual chunk splitting, dynamic imports for heavy vendor libraries, and a CI bundle-size gate, removing 1.1 MB from the initial page load.',
     link: '/blog/p/how-chunking-and-lazy-loading-cut-our-initial-bundle-by-one-megabyte',
