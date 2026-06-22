@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Centralizing Account Management: Moving from Brittle Role Profiles to Unified Identity',
+    description: 'How we refactored a brittle, distributed identity schema by centralizing credentials, verification status, and activation states into a single unified account collection, eliminating duplicate logic and database sync headaches.',
+    link: '/blog/p/centralizing-account-management-for-scalability',
+    uid: 'blog-16',
+    image: 'https://images.unsplash.com/photo-1780835725722-37f850f4bd0b?q=80&w=1493&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'From Polling to Streaming: How BullMQ and SSE Solved Our CRM Bottlenecks',
     description: 'How we replaced a resource-intensive database polling scheduler and frequent client-side polling with BullMQ delayed queues and real-time Server-Sent Events (SSE), reducing notification latency from minutes to milliseconds.',
     link: '/blog/p/from-polling-to-streaming-how-bullmq-and-sse-solved-our-crm-bottlenecks',
