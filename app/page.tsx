@@ -42,7 +42,7 @@ export default function Personal() {
                 One of my quieter interests is understanding <strong>how technology shapes human behavior.</strong>
               </li>
               <li>
-                Outside of coding, I spend time writing, reading, and following whatever science rabbit hole catches my attention.
+                Outside of coding, I spend time gaming, reading, and following whatever science/tech rabbit hole catches my attention.
               </li>
             </ul>
           </div>
