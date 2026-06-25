@@ -200,10 +200,10 @@ export default function Personal() {
               ariaLabel="A research-oriented Rust prototype for the controlled generation of an artificial language designed to model an unfamiliar, non-human linguistic system."
             />
             <ProjectCard
-              href="/more/note-data-format"
-              title="Note Data Format"
-              description="A lightweight structured data language designed to be both human-readable and machine-parsable."
-              ariaLabel="A lightweight structured data language designed to be both human-readable and machine-parsable."
+              href="https://github.com/paul-mothapo/zoryth"
+              title="Zoryth"
+              description="A double-entry ledger engine built for programmatic consumption."
+              ariaLabel="Zoryth: A double-entry ledger engine built for programmatic consumption."
             />
           </div>
         </AnimatedSection>
