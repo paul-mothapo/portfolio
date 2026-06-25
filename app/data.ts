@@ -32,6 +32,13 @@ export const CURRENT_WORK: CurrentWork[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    title: 'Designing Systems for Business Value, Simplicity, and Long-Term Stability',
+    description: 'As developers mature, their focus shifts from syntax and configuration to domain context, trade-offs, and long-term reliability. Here is why the best system design prioritizes business value and simple, self-sustaining architectures.',
+    link: '/blog/p/the-ownership-mindset-designing-for-business-and-stability',
+    uid: 'blog-17',
+    image: 'https://images.unsplash.com/photo-1780815891330-0842ee2cb1f1?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  },
+  {
     title: 'Centralizing Account Management: Moving from Brittle Role Profiles to Unified Identity',
     description: 'How we refactored a brittle, distributed identity schema by centralizing credentials, verification status, and activation states into a single unified account collection, eliminating duplicate logic and database sync headaches.',
     link: '/blog/p/centralizing-account-management-for-scalability',
